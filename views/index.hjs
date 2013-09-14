@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+    <script>
+      var socket = io.connect('http://localhost:3000');
+      socket.on('msg', function (data) {
+        console.log(data.msg);
+        var datos = JSON.parse(data.msg);
+
+        // Primero, buscamos una fila que ya tenga esos datos.
+
+        var fila = $('#fila_'+datos.id);
+
+        console.log(fila.length);
+
+        var html = '<tr id="fila_'+datos.id+'">'+
+                '<td>'+datos.fecha+'</td>'+
+                '<td>'+datos.accion+'</td>'+
+                '<td>'+datos.estado+'</td>'+
+                '<td>'+datos.importe.toFixed(2)+'</td>'+
+                '</tr>';
+
+        if (fila.length != 0) {
+          $(fila).replaceWith(html);
+        } else {
+            $("#tabla tbody").prepend(html);
+        }
+
+          $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
+      });
+    </script>
+
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <p>Welcome to {{ title }}</p>
+
+    <div id="filas">
+        <table id="tabla">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Estado</th>
+                <th>Importe</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+  </body>
+</html>
