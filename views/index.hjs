@@ -9,6 +9,13 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
     <script>
+
+      // assuming io is the Socket.IO server object
+      io.configure(function () {
+        io.set("transports", ["xhr-polling"]);
+        io.set("polling duration", 10);
+      });
+
       var socket = io.connect();
       socket.on('msg', function (data) {
         console.log(data.msg);
