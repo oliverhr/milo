@@ -40,6 +40,7 @@
 
   </head>
   <body>
+    <img src="https://www.pademobile.com/static/pademobile/images/pademobile_logo.png"/>
     <h1>{{ title }}</h1>
     <p>Welcome to {{ title }}</p>
 

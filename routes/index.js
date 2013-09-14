@@ -4,5 +4,5 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Milo, realtime reporting' });
+  res.render('index', { title: 'Milo, realtime reporting for Pademobile' });
 };
