@@ -13,6 +13,7 @@
         $(document).ready(function() {
     //        var socket = new io.Socket('localhost', {port: 3000, rememberTransport: false/*, transports: ['xhr-polling']*/});
             var socket = io.connect();
+            io.set('transports', ['xhr-polling']);
             var content = $('#filas');
 
             var importe = 0;
