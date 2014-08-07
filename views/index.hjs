@@ -10,55 +10,133 @@
 
     <script>
 
-      var socket = io.connect();
-      socket.on('msg', function (data) {
-        console.log(data.msg);
-        var datos = JSON.parse(data.msg);
+        $(document).ready(function() {
+    //        var socket = new io.Socket('localhost', {port: 3000, rememberTransport: false/*, transports: ['xhr-polling']*/});
+            var socket = io.connect();
+            var content = $('#filas');
 
-        // Primero, buscamos una fila que ya tenga esos datos.
+            var importe = 0;
+            var transacciones = 0;
+            var fechaactual = null;
 
-        var fila = $('#fila_'+datos.id);
+            socket.on('connect', function() {
+                console.log('Conectado!');
+            });
 
-        console.log(fila.length);
+            socket.on('message', function(message){
+                // console.log('Recibimos: **' + message+ '**');
+                var datos = JSON.parse(message);
 
-        var html = '<tr id="fila_'+datos.id+'">'+
-                '<td>'+datos.fecha+'</td>'+
-                '<td>'+datos.accion+'</td>'+
-                '<td>'+datos.estado+'</td>'+
-                '<td>'+datos.importe.toFixed(2)+'</td>'+
-                '</tr>';
+                var fila = $('#fila_'+datos.id);
 
-        if (fila.length != 0) {
-          $(fila).replaceWith(html);
-        } else {
-            $("#tabla tbody").prepend(html);
-        }
+                var fecha = new Date(Date.parse(datos.fecha));
 
-          $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
-      });
+                if (fechaactual == null) {
+                    fechaactual = fecha;
+                }
+
+                if (!fechaactual || (fecha.getDate() != fechaactual.getDate())) {
+                    fechaactual = fecha.getDate();
+                    importe = 0;
+                    transacciones = 0;
+                    alert('inicializamos!');
+                }
+
+                // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
+
+                var html = '<tr id="fila_'+datos.id+'">'+
+                    '<td>'+datos.fecha+'</td>'+
+                    '<td>'+datos.canal+'</td>';
+
+                if (datos.excepcion) {
+                    html = html + '<td>'+datos.nombre_estado+' ('+datos.excepcion+')</td>';
+                } else {
+                    html = html + '<td>'+datos.nombre_estado+'</td>';
+                }
+
+                html = html +
+                    '<td>'+datos.nombre_accion+'</td>'+
+                    '<td>'+datos.usuario.alias+'</td>'+
+                    '<td>'+datos.importe_fmt_abs+'</td>';
+
+                    if (datos.destino) {
+                        html = html + '<td>' + datos.destino.alias + '</td>';
+                    } else {
+                        html = html + '<td>' + '(None)' + '</td>';
+                    }
+
+                    html = html + '<td>'+datos.concepto+'</td>'+
+                    '<td>'+datos.codtran+'</td>'+
+                    '</tr>';
+
+                if (fila.length != 0) {
+                  $(fila).replaceWith(html);
+                } else {
+                    $("#tabla tbody").prepend(html);
+                }
+
+                $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
+
+                transacciones = transacciones + 1;
+                if (datos.nombre_estado == 'Aprobada') {
+                    importe = importe + Math.abs(datos.importe);
+                }
+
+                // $('#transacciones').fadeOut(200);
+                $('#transacciones').html(transacciones);
+                // $('#transacciones').fadeIn(200);
+
+                // $('#importe').fadeOut(200);
+                $('#importe').html(importe);
+                // $('#importe').fadeIn(200);
+            }) ;
+
+            socket.on('disconnect', function() {
+                console.log('disconnected');
+                content.html("<b>Disconnected!</b>");
+            });
+
+        });
     </script>
 
   </head>
   <body>
-    <img src="https://www.pademobile.com/static/pademobile/images/pademobile_logo.png"/>
-    <h1>{{ title }}</h1>
-    <p>Welcome to {{ title }}</p>
+    <div id="wrapper">
+        <!--<img class="logo" src="https://www.pademobile.com/static/pademobile/images/pademobile_logo.png"/>-->
+        <!--<h1>{{ title }}</h1>-->
+        <!--<p>Welcome to {{ title }}</p>-->
 
-    <div id="filas">
-        <table id="tabla">
-            <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Acción</th>
-                <th>Estado</th>
-                <th>Importe</th>
-            </tr>
-            </thead>
-            <tbody>
+        <div id="filas">
+            <table id="tabla">
+                <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Canal</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                    <th>Origen</th>
+                    <th>Importe</th>
+                    <th>Destino</th>
+                    <th>Concepto</th>
+                    <th>Código de transacción</th>
+                </tr>
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
+    <div class="pie">
+        <div class="total_izquierda">
+            <div class="titulo_total">Amount</div>
+            <div id="importe">0</div>
+        </div>
+        <div class="total_derecha">
+            <div class="titulo_total">Transactions</div>
+            <div id="transacciones">0</div>
+        </div>
+    </div>
   </body>
 </html>

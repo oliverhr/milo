@@ -1,20 +1,29 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+    margin: 0;
+}
+html, body {
+    height: 100%;
+}
+.wrapper {
+    min-height: 100%;
+    overflow:auto;
+    padding-bottom: 180px;
 }
 
 a {
   color: #00B7FF;
 }
 
-#table {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-    font-size: 12px;
-    width: 480px;
-    text-align: left;
-    border-collapse: collapse;
-    border: 1px solid #69c;
-    margin: 20px;
+.logo {
+    float: none;
+    margin-right: 50px;
+    padding-top: 2px;
+    padding-left: 20px;
+}
+
+#tabla {
+    font-family: "courier new", Courier;
+    font-size: 14px;
 }
 
 thead {
@@ -46,4 +55,60 @@ tbody {
 td {
     color: #669;
     padding: 7px 17px;
+}
+
+.pie {
+    font-family: "courier new", Courier;
+    font-size: 40px;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+
+    margin-top: -150px; /* negative value of footer height */
+    height: 180px;
+    clear:both;
+
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 1px dashed #69c;
+}
+
+.total_izquierda {
+    float: right;
+    padding-top: 40px;
+    width: 48%;
+    border-left: 1px dashed #69c;
+    height: 100%;
+}
+
+.total_derecha {
+    float: left;
+    padding-top: 40px;
+    width: 50%;
+    height: 100%;
+}
+
+.titulo_total {
+    background-color: white;
+    float: none;
+    width: 100%;
+    vertical-align: middle;
+    font-family: "courier new", Courier;
+    font-size: 25px;
+    padding-bottom: 10px;
+}
+
+#transacciones {
+    background-color: white;
+    font-size: 70px;
+    vertical-align: middle;
+}
+
+#importe {
+    background-color: white;
+    font-size: 70px;
+    vertical-align: middle;
 }

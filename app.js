@@ -36,42 +36,49 @@ server.listen(app.get('port'), function(){
   console.log('Milo server listening on port ' + app.get('port'));
 });
 
-var io = require('socket.io').listen(server);
+const redis = require('redis');
+const client = redis.createClient();
 
-io.configure(function () {
-    io.set("transports", ["xhr-polling"]);
-    io.set("polling duration", 10);
-});
+console.log('info', 'connected to redis server');
 
-io.sockets.on('connection', function(socket){
-    //send data to client
-    setInterval(function(){
+var io = require('socket.io');
 
-        var acciones = ['Envío de dinero', 'Pago de recibos', 'Compra de seguros'];
-        var estados = ['Solicitada', 'Aprobada', 'Caducada'];
-        var importe = Math.random() * 1000;
+if (!module.parent) {
+    const socket  = io.listen(server);
 
-        var id = Math.floor((Math.random()*10)+1);
+    socket.on('connection', function(client) {
+        const subscribe = redis.createClient();
 
-        var estado = estados[Math.floor(Math.random()*3)];
-        var accion = acciones[Math.floor(Math.random()*3)];
+        console.log('Suscribiéndonos');
 
-        var fecha = new Date();
+        subscribe.on("subscribe", function (channel, count) {
+            console.log('Nos hemos suscrito al canal' + channel + '.Somos el número: ' + count);
+        });
 
-        var report = JSON.stringify( {"id": id,
-                                      "fecha": fecha.getDay()+'/'+fecha.getMonth()+'/'+fecha.getFullYear()+' '+
-                                                fecha.getHours()+':'+fecha.getMinutes()+':'+fecha.getSeconds(),
-                                      "accion": accion,
-                                      "estado": estado,
-                                      "importe": importe} );
+        subscribe.on("message", function (channel, message) {
+            console.log("client1 channel " + channel + ": " + message);
+            socket.emit('msg', {'msg': message});
+            client.send(message);
 
-        socket.emit('msg', {'msg': report});
-        // socket.emit('msgWrite', msgWrite);
-    }, 1000);
 
-    //recieve client data
-    // socket.on('client_data', function(data){
-    //     process.stdout.write(data.letter);
-    //     msgWrite = msgWrite + data.letter;
-    // });
-});
+
+//            msg_count += 1;
+//            if (msg_count === 3) {
+//                client1.unsubscribe();
+//                client1.end();
+//                client2.end();
+//            }
+        });
+
+        subscribe.subscribe("transacciones-pademobile");
+
+//        subscribe.subscribe('realtime');
+//
+//
+//        subscribe.on("message", function(channel, message) {
+//            socket.emit('msg', {'channel': channel, 'msg': message});
+//            console.log('msg', "received from channel #" + channel + " : " + message);
+//        });
+
+    });
+}
