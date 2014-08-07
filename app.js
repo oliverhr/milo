@@ -52,7 +52,7 @@ if (!module.parent) {
         console.log('Suscribiéndonos');
 
         subscribe.on("subscribe", function (channel, count) {
-            console.log('Nos hemos suscrito al canal' + channel + '.Somos el número: ' + count);
+            console.log('Nos hemos suscrito al canal: ' + channel + '.Somos el número: ' + count);
         });
 
         subscribe.on("message", function (channel, message) {
