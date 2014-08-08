@@ -3,6 +3,8 @@
 }
 html, body {
     height: 100%;
+    background-color: black;
+    color: white;
 }
 .wrapper {
     min-height: 100%;
@@ -11,7 +13,7 @@ html, body {
 }
 
 a {
-  color: #00B7FF;
+  color: white;
 }
 
 .logo {
@@ -29,20 +31,19 @@ a {
 thead {
     display: table-header-group;
     vertical-align: middle;
-    border-color: inherit;
+    border-color: white;
 }
 
 tr {
     display: table-row;
     vertical-align: inherit;
-    border-color: inherit;
+    border-color: white;
 }
 
 th {
     font-weight: normal;
     font-size: 14px;
-    color: #039;
-    border-bottom: 1px dashed #69c;
+    border-bottom: 1px dashed white;
     padding: 12px 17px;
 }
 
@@ -53,7 +54,6 @@ tbody {
 }
 
 td {
-    color: #669;
     padding: 7px 17px;
 }
 
@@ -72,15 +72,15 @@ td {
     position: fixed;
     left: 0;
     right: 0;
-    background-color: white;
-    border-top: 1px dashed #69c;
+    background-color: black;
+    border-top: 1px dashed white;
 }
 
 .total_izquierda {
     float: right;
     padding-top: 40px;
     width: 48%;
-    border-left: 1px dashed #69c;
+    border-left: 1px dashed white;
     height: 100%;
 }
 
@@ -92,7 +92,6 @@ td {
 }
 
 .titulo_total {
-    background-color: white;
     float: none;
     width: 100%;
     vertical-align: middle;
@@ -102,13 +101,11 @@ td {
 }
 
 #transacciones {
-    background-color: white;
     font-size: 70px;
     vertical-align: middle;
 }
 
 #importe {
-    background-color: white;
     font-size: 70px;
     vertical-align: middle;
 }

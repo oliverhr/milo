@@ -69,7 +69,10 @@
                     '<td>'+datos.codtran+'</td>'+
                     '</tr>';
 
+                var reemplazar = false;
+
                 if (fila.length != 0) {
+                    reemplazar = true;
                   $(fila).replaceWith(html);
                 } else {
                     $("#tabla tbody").prepend(html);
@@ -77,7 +80,10 @@
 
                 $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
 
-                transacciones = transacciones + 1;
+                if (!reemplazar) {
+                    transacciones = transacciones + 1;
+                }
+
                 if (datos.nombre_estado == 'Aprobada') {
                     importe = importe + Math.abs(datos.importe);
                 }
@@ -110,15 +116,15 @@
             <table id="tabla">
                 <thead>
                 <tr>
-                    <th>Fecha</th>
-                    <th>Canal</th>
-                    <th>Estado</th>
-                    <th>Acción</th>
-                    <th>Origen</th>
-                    <th>Importe</th>
-                    <th>Destino</th>
-                    <th>Concepto</th>
-                    <th>Código de transacción</th>
+                    <th>Date</th>
+                    <th>Channel</th>
+                    <th>State</th>
+                    <th>Service</th>
+                    <th>From</th>
+                    <th>Amount</th>
+                    <th>To</th>
+                    <th>Subject</th>
+                    <th>Transaction Code</th>
                 </tr>
                 </thead>
                 <tbody>
