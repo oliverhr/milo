@@ -9,10 +9,11 @@
     "express": "~3.4.0",
     "hjs": "*",
     "socket.io": "~0.9.6",
-    "redis": "*"
+    "redis": "*",
+    "moment": "~2.8.1"
   },
- "engines": {
-     "node": "0.10.x",
-     "npm": "1.2.x"
- }
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
 }

@@ -4,6 +4,7 @@
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/js/moment.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -29,17 +30,20 @@
 
                 var fila = $('#fila_'+datos.id);
 
-                var fecha = new Date(Date.parse(datos.fecha));
+                var fecha = new Date(moment(datos.fecha, "DD-MM-YYYY HH:MM:SS"));
+
+                // var fecha = new Date(Date.parse(datos.fecha));
 
                 if (fechaactual == null) {
                     fechaactual = fecha;
+                    console.log('Inicializamos fecha a '+fechaactual);
                 }
 
-                if (!fechaactual || (fecha.getDate() != fechaactual.getDate())) {
-                    fechaactual = fecha.getDate();
+                if (fecha.getDate() != fechaactual.getDate()) {
+                    fechaactual = fecha;
                     importe = 0;
                     transacciones = 0;
-                    alert('inicializamos!');
+                    console.log('inicializamos!');
                 }
 
                 // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
@@ -138,6 +142,7 @@
         <div class="total_izquierda">
             <div class="titulo_total">Amount</div>
             <div id="importe">0</div>
+
         </div>
         <div class="total_derecha">
             <div class="titulo_total">Transactions</div>
