@@ -1,0 +1,132 @@
+    <script>
+
+        $(document).ready(function() {
+    //        var socket = new io.Socket('localhost', {port: 3000, rememberTransport: false/*, transports: ['xhr-polling']*/});
+            var socket = io.connect();
+            var content = $('#filas');
+
+            var importe = 0;
+            var transacciones = 0;
+            var fechaactual = null;
+
+            socket.on('connect', function() {
+                console.log('Conectado - página 1!');
+            });
+
+            socket.on('message', function(message){
+                // console.log('Recibimos: **' + message+ '**');
+                var datos = JSON.parse(message);
+
+                var fila = $('#fila_'+datos.id);
+
+                var fecha = new Date(Date.parse(datos.fecha));
+
+                if (fechaactual == null) {
+                    fechaactual = fecha;
+                }
+
+                if (!fechaactual || (fecha.getDate() != fechaactual.getDate())) {
+                    fechaactual = fecha.getDate();
+                    importe = 0;
+                    transacciones = 0;
+                    alert('inicializamos!');
+                }
+
+                // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
+
+                var html = '<tr id="fila_'+datos.id+'">'+
+                    '<td>'+datos.fecha+'</td>'+
+                    '<td>'+datos.canal+'</td>';
+
+                if (datos.excepcion) {
+                    html = html + '<td>'+datos.nombre_estado+' ('+datos.excepcion+')</td>';
+                } else {
+                    html = html + '<td>'+datos.nombre_estado+'</td>';
+                }
+
+                html = html +
+                    '<td>'+datos.nombre_accion+'</td>'+
+                    '<td>'+datos.usuario.alias+'</td>'+
+                    '<td>'+datos.importe_fmt_abs+'</td>';
+
+                    if (datos.destino) {
+                        html = html + '<td>' + datos.destino.alias + '</td>';
+                    } else {
+                        html = html + '<td>' + '(None)' + '</td>';
+                    }
+
+                    html = html + '<td>'+datos.concepto+'</td>'+
+                    '<td>'+datos.codtran+'</td>'+
+                    '</tr>';
+
+                var reemplazar = false;
+
+                if (fila.length != 0) {
+                    reemplazar = true;
+                  $(fila).replaceWith(html);
+                } else {
+                    $("#tabla tbody").prepend(html);
+                }
+
+                $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
+
+                if (!reemplazar) {
+                    transacciones = transacciones + 1;
+                }
+
+                if (datos.nombre_estado == 'Aprobada') {
+                    importe = importe + Math.abs(datos.importe);
+                }
+
+                // $('#transacciones').fadeOut(200);
+                $('#transacciones').html(transacciones);
+                // $('#transacciones').fadeIn(200);
+
+                // $('#importe').fadeOut(200);
+                $('#importe').html(importe);
+                // $('#importe').fadeIn(200);
+            }) ;
+
+            socket.on('disconnect', function() {
+                console.log('disconnected');
+                content.html("<b>Disconnected!</b>");
+            });
+
+        });
+    </script>
+
+  <div>
+    <div id="wrapper">
+      <div id="filas">
+          <table id="tabla">
+              <thead>
+              <tr>
+                  <th>Date</th>
+                  <th>Channel</th>
+                  <th>State</th>
+                  <th>Service</th>
+                  <th>From</th>
+                  <th>Amount</th>
+                  <th>To</th>
+                  <th>Subject</th>
+                  <th>Transaction Code</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+          </table>
+      </div>
+    </div>
+
+    <div class="pie">
+      <div class="total_izquierda">
+          <div class="titulo_total">Amount</div>
+          <div id="importe">0</div>
+      </div>
+      <div class="total_derecha">
+          <div class="titulo_total">Transactions</div>
+          <div id="transacciones">0</div>
+      </div>
+    </div>
+  </div>

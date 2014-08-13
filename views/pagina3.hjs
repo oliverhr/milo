@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bar Chart</title>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.6.0"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style type="text/css">
+
+        .chart div {
+               font: 10px sans-serif;
+               background-color: steelblue;
+               text-align: right;
+               padding: 3px;
+               margin: 1px;
+               color: white;
+             }
+
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var socket = io.connect();
+    var datos = [];
+
+    socket.on('connect', function() {
+        console.log('Conectado - página 3!');
+    });
+
+    socket.on('message', function(message){
+        // console.log('Recibimos: **' + message+ '**');
+        var data = JSON.parse(message);
+
+        // console.log(data.importe+' - '+data.nombre_estado);
+
+        if ((data.nombre_estado == 'Aprobada') && (data.importe != null)) {
+            datos.push(data);
+            var chart = d3.select("#chart");
+
+            chart.selectAll("div")
+                    .data(datos)
+                    .enter().append("div")
+                    .attr("y", function(data) { return y(Math.abs(data.importe)); })
+                    .attr("x", function(data) { return x(data.usuario.alias); })
+                    .attr("height", function(data) { return height - y(Math.abs(data.importe)); })
+                    .text(function(data) { return data.usuario.alias; });
+
+            // $('#textos').append('<div>'+data.importe+'</div>');
+
+
+        }
+
+    }) ;
+
+    socket.on('disconnect', function() {
+        console.log('disconnected');
+        content.html("<b>Disconnected!</b>");
+    });
+});
+</script>
+
+
+<script type="text/javascript">
+
+    var margin = {top: 40, right: 20, bottom: 30, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+    var formatPercent = d3.format(".0%");
+
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+    var y = d3.scale.linear()
+            .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .tickFormat(formatPercent);
+
+//    var tip = d3.tip()
+//            .attr('class', 'd3-tip')
+//            .offset([-10, 0])
+//            .html(function(d) {
+//                return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+//            })
+
+    var svg = d3.select("chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//    svg.call(tip);
+
+
+</script>
+
+<div>
+    <div id="chart"></div>
+    <div id="textos"></div>
+</div>
+</body>
+</html>

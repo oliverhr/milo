@@ -5,7 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
+var paginas = require('./routes/paginas');
 var http = require('http');
 var path = require('path');
 
@@ -28,7 +28,10 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/report', user.list);
+app.get('/pagina1',  paginas.pagina1);
+app.get('/pagina2', paginas.pagina2);
+app.get('/pagina3', paginas.pagina3);
+app.get('/pagina4', paginas.pagina4);
 
 server = http.createServer(app);
 
