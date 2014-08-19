@@ -32,7 +32,7 @@
   </head>
   <body>
 
-  <div id="carousel-example-generic" class="carousel slide wrapper" data-ride="carousel" data-interval="500000">
+  <div id="carousel-example-generic" class="carousel slide wrapper" data-ride="carousel" data-interval="2000">
       <!-- Indicators -->
       <!--<ol class="carousel-indicators">-->
           <!--<li data-target="#carousel-example-generic" data-slide-to="0" ></li>-->
@@ -41,10 +41,10 @@
 
       <!-- Wrapper for slides -->
       <div class="carousel-inner">
-          <div id="pagina1" class="item">
+          <div id="pagina1" class="item active">
           </div>
 
-          <div id="pagina2" class="item active">
+          <div id="pagina2" class="item ">
           </div>
 
           <div id="pagina3" class="item">

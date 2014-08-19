@@ -105,6 +105,7 @@ $(document).ready(function() {
 </script>
 
 <div>
+    <div>Página 3</div>
     <div id="chart"></div>
     <div id="textos"></div>
 </div>

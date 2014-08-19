@@ -1,31 +1,56 @@
+<script src="/rickshaw/vendor/d3.min.js"></script>
+<script src="/rickshaw/vendor/d3.layout.min.js"></script>
+<script src="/rickshaw/rickshaw.min.js"></script>
+
+
 <script>
-    var width = 960,
-            height = 500;
 
-    var projection = d3.geo.mercator()
-            .center([0, 5 ])
-            .scale(150)
-            .rotate([-180,0]);
+    $(document).ready(function() {
+        //        var socket = new io.Socket('localhost', {port: 3000, rememberTransport: false/*, transports: ['xhr-polling']*/});
+        var socket = io.connect();
 
-    var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        socket.on('connect', function() {
+            console.log('Conectado!');
+        });
 
-    var path = d3.geo.path()
-            .projection(projection);
+        socket.on('message', function(message){
+            if message
+            // console.log('Recibimos: **' + message+ '**');
+        });
 
-    var g = svg.append("g");
+        socket.on('disconnect', function() {
+            console.log('disconnected');
+            content.html("<b>Disconnected!</b>");
+        });
 
-    // load and display the World
-    d3.json("javascripts/world-110m2.json", function(error, topology) {
-        g.selectAll("path")
-                .data(topojson.object(topology, topology.objects.countries)
-                        .geometries)
-                .enter()
-                .append("path")
-                .attr("d", path)
     });
+</script>
+
+
+<script>
+
+    //multiple areas
+    var graph = new Rickshaw.Graph({
+        renderer: 'bar',
+        element: document.querySelector('#totales_accion'),
+        series: [
+            {
+                data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
+                color: '#4682b4'
+            }, {
+                data: [ { x: 0, y: 20 }, { x: 1, y: 24 }, { x: 2, y: 19 }, { x: 3, y: 15 }, { x: 4, y: 16 } ],
+                color: '#9cc1e0'
+
+            } ]
+
+    });
+    graph.renderer.unstack = true;
+    graph.render();
 
 </script>
 
-<div id="container-mapa"></div>
+<div id="totales_accion"></div>
+
+<div id="totales_estado"></div>
+
+<div id="totales_canal"></div>
