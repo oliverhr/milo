@@ -47,28 +47,41 @@ console.log('info', 'connected to redis server');
 
 var io = require('socket.io');
 
-function acumular(clave, objeto, criterio, redis_cli) {
-    console.log('Acumulando '+criterio+' en '+clave);
+function acumular(clave, objeto, criterio, redis_cli, client) {
+    // console.log('Acumulando '+criterio+' en '+clave);
     if (objeto.importe != null) {
         redis_cli.get(clave, function (err, reply) {
             // reply is null when the key is missing
             if (reply != null) {
                 var total = JSON.parse(reply);
+                total = total.datos;
             } else {
                 var total = {};
             }
 
-            if (total[objeto[criterio]] == null) {
-                total[objeto[criterio]] = 0;
+            if (criterio == 'usuario') {
+                if (objeto.usuario.telefono.indexOf('AFIL') > -1) {
+                    var valor_criterio = objeto.usuario.alias;
+                } else {
+                    var valor_criterio = 'Usuario';
+                }
+            } else {
+                var valor_criterio = objeto[criterio];
             }
 
-            total[objeto[criterio]] = total[objeto[criterio]] + Math.abs(objeto.importe);
+            if (total[valor_criterio] == null) {
+                total[valor_criterio] = 0;
+            }
 
-            redis_cli.set(clave, JSON.stringify(total));
+            total[valor_criterio] = total[valor_criterio] + Math.abs(objeto.importe);
 
-            total['']
+            var resultado = JSON.stringify({ "tipo": clave, "datos": total});
 
-            return total
+            redis_cli.set(clave, resultado);
+
+            client.send(resultado);
+
+            return resultado;
         });
     };
 }
@@ -92,18 +105,16 @@ if (!module.parent) {
 
             var objeto = JSON.parse(message);
 
+            console.log(objeto);
+
             var fecha = new Date(moment(objeto.fecha, "DD/MM/YYYY HH:mm:ss"));
 
             // aquí deberíamos ir acumulando los diferentes totales, y entregarlos a cada página?
 
-            var totales = acumular("total_canal_" + moment(fecha).format('DDMMYYYY'), objeto, 'canal', redis_cli);
-            client.send(totales);
-            var totales = acumular("total_accion_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_accion', redis_cli);
-            client.send(totales);
-            var totales = acumular("total_estado_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_estado', redis_cli);
-            client.send(totales);
-            var totales = acumular("total_usuario_" + moment(fecha).format('DDMMYYYY'), objeto, 'usuario', redis_cli);
-            client.send(totales);
+            var totales = acumular("total_canal_" + moment(fecha).format('DDMMYYYY'), objeto, 'canal', redis_cli, client);
+            totales = acumular("total_accion_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_accion', redis_cli, client);
+            totales = acumular("total_estado_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_estado', redis_cli, client);
+            totales = acumular("total_afiliado_" + moment(fecha).format('DDMMYYYY'), objeto, 'usuario', redis_cli, client);
         });
 
         subscribe.subscribe("transacciones-pademobile");

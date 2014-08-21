@@ -14,40 +14,40 @@
             });
 
             socket.on('message', function(message){
-                // console.log('Recibimos: **' + message+ '**');
                 var datos = JSON.parse(message);
 
-                var fila = $('#fila_'+datos.id);
+                if (datos.fecha) {
 
-                var fecha = new Date(Date.parse(datos.fecha));
+                    var fila = $('#fila_' + datos.id);
 
-                if (fechaactual == null) {
-                    fechaactual = fecha;
-                }
+                    var fecha = new Date(Date.parse(datos.fecha));
 
-                if (!fechaactual || (fecha.getDate() != fechaactual.getDate())) {
-                    fechaactual = fecha.getDate();
-                    importe = 0;
-                    transacciones = 0;
-                    alert('inicializamos!');
-                }
+                    if (fechaactual == null) {
+                        fechaactual = fecha;
+                    }
 
-                // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
+                    if (!fechaactual || (fecha.getDate() != fechaactual.getDate())) {
+                        fechaactual = fecha.getDate();
+                        importe = 0;
+                        transacciones = 0;
+                    }
 
-                var html = '<tr id="fila_'+datos.id+'">'+
-                    '<td>'+datos.fecha+'</td>'+
-                    '<td>'+datos.canal+'</td>';
+                    // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
 
-                if (datos.excepcion) {
-                    html = html + '<td>'+datos.nombre_estado+' ('+datos.excepcion+')</td>';
-                } else {
-                    html = html + '<td>'+datos.nombre_estado+'</td>';
-                }
+                    var html = '<tr id="fila_' + datos.id + '">' +
+                            '<td>' + datos.fecha + '</td>' +
+                            '<td>' + datos.canal + '</td>';
 
-                html = html +
-                    '<td>'+datos.nombre_accion+'</td>'+
-                    '<td>'+datos.usuario.alias+'</td>'+
-                    '<td>'+datos.importe_fmt_abs+'</td>';
+                    if (datos.excepcion) {
+                        html = html + '<td>' + datos.nombre_estado + ' (' + datos.excepcion + ')</td>';
+                    } else {
+                        html = html + '<td>' + datos.nombre_estado + '</td>';
+                    }
+
+                    html = html +
+                            '<td>' + datos.nombre_accion + '</td>' +
+                            '<td>' + datos.usuario.alias + '</td>' +
+                            '<td>' + datos.importe_fmt_abs + '</td>';
 
                     if (datos.destino) {
                         html = html + '<td>' + datos.destino.alias + '</td>';
@@ -55,36 +55,37 @@
                         html = html + '<td>' + '(None)' + '</td>';
                     }
 
-                    html = html + '<td>'+datos.concepto+'</td>'+
-                    '<td>'+datos.codtran+'</td>'+
-                    '</tr>';
+                    html = html + '<td>' + datos.concepto + '</td>' +
+                            '<td>' + datos.codtran + '</td>' +
+                            '</tr>';
 
-                var reemplazar = false;
+                    var reemplazar = false;
 
-                if (fila.length != 0) {
-                    reemplazar = true;
-                  $(fila).replaceWith(html);
-                } else {
-                    $("#tabla tbody").prepend(html);
-                }
+                    if (fila.length != 0) {
+                        reemplazar = true;
+                        $(fila).replaceWith(html);
+                    } else {
+                        $("#tabla tbody").prepend(html);
+                    }
 
-                $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
+                    $('#fila_' + datos.id).fadeOut(300).fadeIn(300);
 
-                if (!reemplazar) {
-                    transacciones = transacciones + 1;
-                }
+                    if (!reemplazar) {
+                        transacciones = transacciones + 1;
+                    }
 
-                if (datos.nombre_estado == 'Aprobada') {
-                    importe = importe + Math.abs(datos.importe);
-                }
+                    if (datos.nombre_estado == 'Aprobada') {
+                        importe = importe + Math.abs(datos.importe);
+                    }
 
-                // $('#transacciones').fadeOut(200);
-                $('#transacciones').html(transacciones);
-                // $('#transacciones').fadeIn(200);
+                    // $('#transacciones').fadeOut(200);
+                    $('#transacciones').html(transacciones);
+                    // $('#transacciones').fadeIn(200);
 
-                // $('#importe').fadeOut(200);
-                $('#importe').html(importe);
-                // $('#importe').fadeIn(200);
+                    // $('#importe').fadeOut(200);
+                    $('#importe').html(importe);
+                    // $('#importe').fadeIn(200);
+                };
             }) ;
 
             socket.on('disconnect', function() {

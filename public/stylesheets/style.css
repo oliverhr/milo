@@ -123,3 +123,22 @@ path {
     stroke-width: 0.25px;
     fill: grey;
 }
+
+.container_grafico {
+    width: 50%;
+    float: left;
+}
+
+.titulo_grafico {
+    float: none;
+    width: 100%;
+    vertical-align: middle;
+    font-family: "courier new", Courier;
+    font-size: 25px;
+    padding-bottom: 10px;
+}
+
+.grafico {
+    width: 500px;
+    height: 500px;
+}
