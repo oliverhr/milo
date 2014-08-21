@@ -41,10 +41,10 @@
 
       <!-- Wrapper for slides -->
       <div class="carousel-inner">
-          <div id="pagina1" class="item ">
+          <div id="pagina1" class="item active">
           </div>
 
-          <div id="pagina2" class="item active">
+          <div id="pagina2" class="item ">
           </div>
 
           <!--<div id="pagina3" class="item">-->

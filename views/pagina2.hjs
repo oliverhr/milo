@@ -49,7 +49,7 @@
         socket.on('message', function(message){
             var json = JSON.parse(message);
 
-            if (json.tipo) {
+            if ((json.tipo) && (json.tipo != 'total_06082014')) {
 
                 // quitamos la fecha
                 titulo = json.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
