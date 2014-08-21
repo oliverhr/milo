@@ -29,6 +29,7 @@
 
             if (datos.tipo) {
                 var titulo = datos.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
+                var titulo = titulo.replace('_'+moment().format('DDMMYYYY'),'');
             } else {
                 var titulo = '';
             }

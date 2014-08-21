@@ -18,9 +18,14 @@ var passport = require('passport')
 //   Strategies in passport require a `validate` function, which accept
 //   credentials (in this case, an OpenID identifier and profile), and invoke a
 //   callback with a user object.
+
+var url_base = 'http://localhost:3000/';
+var url_base = 'http://http://207.249.77.116/';
+
+
 passport.use(new GoogleStrategy({
-        returnURL: 'http://localhost:3000/auth/google/return',
-        realm: 'http://localhost:3000/'
+        returnURL: url_base+'auth/google/return',
+        realm: url_base
     },
     function(identifier, profile, done) {
         // asynchronous verification, for effect...
