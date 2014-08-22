@@ -172,8 +172,10 @@ function acumular_total_dia(clave, objeto, redis_cli, client) {
                 var total = { "transacciones": 0, "importe": 0 };
             }
 
-            total.transacciones = total.transacciones + 1;
-            total.importe = total.importe + Math.abs(objeto.importe);
+            if (total.nombre_estado == 'Aprobada') {
+                total.transacciones = total.transacciones + 1;
+                total.importe = total.importe + Math.abs(objeto.importe);
+            }
 
             var resultado = JSON.stringify({ "tipo": clave, "datos": total});
 

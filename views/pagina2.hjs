@@ -30,7 +30,7 @@
                             fillColor: "rgba(220,220,220,0.5)",
                             strokeColor: "rgba(220,220,220,0.8)",
                             highlightFill: "rgba(220,220,220,0.75)",
-                            highlightStroke: "rgba(220,220,220,1)",
+                            highlightStroke: "rgba(220,220,220,1)"
             }
 
             var i = 0;
@@ -53,13 +53,13 @@
 
                 // quitamos la fecha
                 var titulo = json.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
-                var titulo = json.tipo.replace('_'+moment().format('DDMMYYYY'),'');
+                var titulo = titulo.replace('_'+moment().format('DDMMYYYY'),'');
 
                 var datos = json.datos;
 
                 var colores = [ "#F7464A", "#46BFBD", "#FDB45C", "#FF5A5E", "#5AD3D1", "#FFC870"];
 
-                var ctx = document.getElementById(titulo).getContext("2d");
+
                 var options = {
                     segmentShowStroke : true,
                     segmentStrokeColor : "#fff",
@@ -72,14 +72,23 @@
                 };
 
                 switch (titulo) {
-                    case "total_canal":
-                    case "total_estado":
+                    case "total_accion":
+                    case "total_afiliado":
                         var data = preparar_pie(datos, colores);
+                        console.log('Buscamos '+titulo+'_pie');
+                        var ctx = document.getElementById(titulo+'_pie').getContext("2d");
+                        console.log('encontramos '+ ctx);
                         var myChart = new Chart(ctx).Doughnut(data,options);
-                        break;
-                    default:
+
+                        console.log('Buscamos '+titulo+'_bar');
+                        var ctx = document.getElementById(titulo+'_bar').getContext("2d");
+                        console.log('encontramos '+ ctx);
                         var data = preparar_bar(datos);
                         var myChart = new Chart(ctx).Bar(data,options);
+
+                        break;
+                    default:
+                        console.log(titulo);
                         break;
                 }
 
@@ -95,22 +104,22 @@
 </script>
 
 <div class="container_grafico">
-    <div class="titulo_grafico">Importe total por canal</div>
-    <canvas id="total_canal" class="grafico" height="300px" width="400px"></canvas>
+    <div class="titulo_grafico">Importe total por tipo de servicio</div>
+    <canvas id="total_accion_pie" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por tipo de servicio</div>
-    <canvas id="total_accion" class="grafico" height="300px" width="400px"></canvas>
-</div>
-
-<div class="container_grafico">
-    <div class="titulo_grafico">Importe total por estado</div>
-    <canvas id="total_estado" class="grafico" height="300px" width="400px"></canvas>
+    <canvas id="total_accion_bar" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por afiliado</div>
-    <canvas id="total_afiliado" class="grafico" height="300px" width="400px"></canvas>
+    <canvas id="total_afiliado_pie" class="grafico" height="300px" width="400px"></canvas>
+</div>
+
+<div class="container_grafico">
+    <div class="titulo_grafico">Importe total por afiliado</div>
+    <canvas id="total_afiliado_bar" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
