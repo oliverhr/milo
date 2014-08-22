@@ -96,21 +96,21 @@
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por canal</div>
-    <canvas id="total_canal" class="grafico" height="400px" width="500px"></canvas>
+    <canvas id="total_canal" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por tipo de servicio</div>
-    <canvas id="total_accion" class="grafico" height="400px" width="500px"></canvas>
+    <canvas id="total_accion" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por estado</div>
-    <canvas id="total_estado" class="grafico" height="400px" width="500px"></canvas>
+    <canvas id="total_estado" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
 <div class="container_grafico">
     <div class="titulo_grafico">Importe total por afiliado</div>
-    <canvas id="total_afiliado" class="grafico" height="400px" width="500px"></canvas>
+    <canvas id="total_afiliado" class="grafico" height="300px" width="400px"></canvas>
 </div>
 
