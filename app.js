@@ -100,7 +100,7 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-// app.get('/', ensureLoggedIn('/auth/google'), routes.index);
+app.get('/', ensureLoggedIn('/auth/google'), routes.index);
 // app.get('/', routes.index);
 app.get('/pagina1',  paginas.pagina1);
 app.get('/pagina2', paginas.pagina2);
