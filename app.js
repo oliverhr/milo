@@ -24,8 +24,8 @@ var url_base = 'http://207.249.77.116/';
 
 
 passport.use(new GoogleStrategy({
-        returnURL: url_base+'auth/google/return',
-        realm: url_base
+        returnURL: 'http://207.249.77.116/'+'auth/google/return',
+        realm: 'http://207.249.77.116/'
     },
     function(identifier, profile, done) {
         // asynchronous verification, for effect...
