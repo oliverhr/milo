@@ -20,7 +20,7 @@ var passport = require('passport')
 //   callback with a user object.
 
 var url_base = 'http://localhost:3000/';
-var url_base = 'http://http://207.249.77.116/';
+var url_base = 'http://207.249.77.116/';
 
 
 passport.use(new GoogleStrategy({
