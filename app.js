@@ -20,14 +20,21 @@ var passport = require('passport')
 //   callback with a user object.
 
 var url_base = 'http://localhost:3000/';
-var url_base = 'http://207.249.77.116/';
+var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
+var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
+var url_base = 'http://milo.pademobile.com/';
+var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
+var clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
+
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 passport.use(new GoogleStrategy({
-        returnURL: 'http://207.249.77.116/'+'auth/google/return',
-        realm: 'http://207.249.77.116/'
+        clientID: clientID,
+        clientSecret: clientSecret,
+        callbackURL: url_base+"auth/google/callback"
     },
-    function(identifier, profile, done) {
+    function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
         process.nextTick(function () {
 
@@ -35,13 +42,10 @@ passport.use(new GoogleStrategy({
             // represent the logged-in user.  In a typical application, you would want
             // to associate the Google account with a user record in your database,
             // and return that user instead.
-            profile.identifier = identifier;
-            console.log(profile.identifier);
             return done(null, profile);
         });
     }
 ));
-
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
@@ -81,26 +85,13 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-// GET /auth/google
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in Google authentication will involve redirecting
-//   the user to google.com.  After authenticating, Google will redirect the
-//   user back to this application at /auth/google/return
 app.get('/auth/google',
-    passport.authenticate('google', { failureRedirect: '/auth/google' }),
-    function(req, res) {
-        res.redirect('/');
-    });
+    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.email'] }));
 
-// GET /auth/google/return
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function function will be called,
-//   which, in this example, will redirect the user to the home page.
-app.get('/auth/google/return',
+app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/auth/google' }),
     function(req, res) {
-        console.log('Autenticado!');
+        // Successful authentication, redirect home.
         res.redirect('/');
     });
 
