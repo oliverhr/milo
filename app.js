@@ -147,7 +147,9 @@ function acumular(clave, objeto, criterio, redis_cli, client) {
                 total[valor_criterio] = 0;
             }
 
-            total[valor_criterio] = total[valor_criterio] + Math.abs(objeto.importe);
+            if (objeto.nombre_estado == 'Aprobada') {
+                total[valor_criterio] = total[valor_criterio] + Math.abs(objeto.importe);
+            }
 
             var resultado = JSON.stringify({ "tipo": clave, "datos": total});
 
@@ -172,7 +174,7 @@ function acumular_total_dia(clave, objeto, redis_cli, client) {
                 var total = { "transacciones": 0, "importe": 0 };
             }
 
-            if (total.nombre_estado == 'Aprobada') {
+            if (objeto.nombre_estado == 'Aprobada') {
                 total.transacciones = total.transacciones + 1;
                 total.importe = total.importe + Math.abs(objeto.importe);
             }
