@@ -19,13 +19,24 @@ var passport = require('passport')
 //   credentials (in this case, an OpenID identifier and profile), and invoke a
 //   callback with a user object.
 
-var url_base = 'http://localhost:3000/';
-var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
-var clientSecret = "-_eBhijCGke5k458Y--IblkU";
+var environment = process.env.NODE_ENV;
+console.log(environment);
 
-var url_base = 'http://milo.pademobile.com/';
-var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
-var clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
+if (environment == 'development') {
+    var url_base = 'http://localhost:3000/';
+    var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
+    var clientSecret = "-_eBhijCGke5k458Y--IblkU";
+
+    var host_redis = 'repos.pademobile.com';
+} else {
+    var url_base = 'http://milo.pademobile.com/';
+    var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
+    var clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
+
+    var host_redis = 'localhost';
+
+    process.env.PORT = 80;
+}
 
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -115,7 +126,7 @@ server.listen(app.get('port'), function(){
 });
 
 const redis = require('redis');
-const client = redis.createClient();
+const client = redis.createClient('6379',host_redis);
 
 console.log('info', 'connected to redis server');
 
@@ -195,8 +206,10 @@ if (!module.parent) {
     const socket  = io.listen(server);
 
     socket.on('connection', function(client) {
-        const subscribe = redis.createClient();
-        const redis_cli = redis.createClient();
+        console.log('antes de suscribirnos a redis '+host_redis);
+
+        const subscribe = redis.createClient('6379',host_redis);
+        const redis_cli = redis.createClient('6379',host_redis);
 
         console.log('Suscribiéndonos');
 
