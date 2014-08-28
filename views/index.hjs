@@ -23,7 +23,7 @@
       <script>
 
         $(document).ready(function() {
-            $('#pagina1').load('/pagina1');
+            // $('#pagina1').load('/pagina1');
             $('#pagina2').load('/pagina2');
             // $('#pagina3').load('/pagina3');
             // $('#pagina4').load('/pagina4');
@@ -41,8 +41,8 @@
 
       <!-- Wrapper for slides -->
       <div class="carousel-inner">
-          <div id="pagina1" class="item">
-          </div>
+          <!--<div id="pagina1" class="item">-->
+          <!--</div>-->
 
           <div id="pagina2" class="item active">
           </div>
