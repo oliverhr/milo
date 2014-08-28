@@ -3,151 +3,58 @@
   <head>
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="/js/moment.min.js"></script>
+    <script src="javascripts/jquery-2.1.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-    <script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+      <script>
 
         $(document).ready(function() {
-    //        var socket = new io.Socket('localhost', {port: 3000, rememberTransport: false/*, transports: ['xhr-polling']*/});
-            var socket = io.connect();
-            var content = $('#filas');
-
-            var importe = 0;
-            var transacciones = 0;
-            var fechaactual = null;
-
-            socket.on('connect', function() {
-                console.log('Conectado!');
-            });
-
-            socket.on('message', function(message){
-                // console.log('Recibimos: **' + message+ '**');
-                var datos = JSON.parse(message);
-
-                var fila = $('#fila_'+datos.id);
-
-                var fecha = new Date(moment(datos.fecha, "DD-MM-YYYY HH:MM:SS"));
-
-                // var fecha = new Date(Date.parse(datos.fecha));
-
-                if (fechaactual == null) {
-                    fechaactual = fecha;
-                    console.log('Inicializamos fecha a '+fechaactual);
-                }
-
-                if (fecha.getDate() != fechaactual.getDate()) {
-                    fechaactual = fecha;
-                    importe = 0;
-                    transacciones = 0;
-                    console.log('inicializamos!');
-                }
-
-                // console.log('ID: ' + datos.id +'. Fila: '+ fila.length);
-
-                var html = '<tr id="fila_'+datos.id+'">'+
-                    '<td>'+datos.fecha+'</td>'+
-                    '<td>'+datos.canal+'</td>';
-
-                if (datos.excepcion) {
-                    html = html + '<td>'+datos.nombre_estado+' ('+datos.excepcion+')</td>';
-                } else {
-                    html = html + '<td>'+datos.nombre_estado+'</td>';
-                }
-
-                html = html +
-                    '<td>'+datos.nombre_accion+'</td>'+
-                    '<td>'+datos.usuario.alias+'</td>'+
-                    '<td>'+datos.importe_fmt_abs+'</td>';
-
-                    if (datos.destino) {
-                        html = html + '<td>' + datos.destino.alias + '</td>';
-                    } else {
-                        html = html + '<td>' + '(None)' + '</td>';
-                    }
-
-                    html = html + '<td>'+datos.concepto+'</td>'+
-                    '<td>'+datos.codtran+'</td>'+
-                    '</tr>';
-
-                var reemplazar = false;
-
-                if (fila.length != 0) {
-                    reemplazar = true;
-                  $(fila).replaceWith(html);
-                } else {
-                    $("#tabla tbody").prepend(html);
-                }
-
-                $('#fila_'+datos.id).fadeOut(300).fadeIn(300);
-
-                if (!reemplazar) {
-                    transacciones = transacciones + 1;
-                }
-
-                if (datos.nombre_estado == 'Aprobada') {
-                    importe = importe + Math.abs(datos.importe);
-                }
-
-                // $('#transacciones').fadeOut(200);
-                $('#transacciones').html(transacciones);
-                // $('#transacciones').fadeIn(200);
-
-                // $('#importe').fadeOut(200);
-                $('#importe').html(importe);
-                // $('#importe').fadeIn(200);
-            }) ;
-
-            socket.on('disconnect', function() {
-                console.log('disconnected');
-                content.html("<b>Disconnected!</b>");
-            });
-
+            // $('#pagina1').load('/pagina1');
+            $('#pagina2').load('/pagina2');
+            // $('#pagina3').load('/pagina3');
+            // $('#pagina4').load('/pagina4');
         });
     </script>
-
   </head>
   <body>
-    <div id="wrapper">
-        <!--<img class="logo" src="https://www.pademobile.com/static/pademobile/images/pademobile_logo.png"/>-->
-        <!--<h1>{{ title }}</h1>-->
-        <!--<p>Welcome to {{ title }}</p>-->
 
-        <div id="filas">
-            <table id="tabla">
-                <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Channel</th>
-                    <th>State</th>
-                    <th>Service</th>
-                    <th>From</th>
-                    <th>Amount</th>
-                    <th>To</th>
-                    <th>Subject</th>
-                    <th>Transaction Code</th>
-                </tr>
-                </thead>
-                <tbody>
+  <div id="carousel-example-generic" class="carousel slide wrapper" data-ride="carousel" data-interval="100000000">
+      <!-- Indicators -->
+      <!--<ol class="carousel-indicators">-->
+          <!--<li data-target="#carousel-example-generic" data-slide-to="0" ></li>-->
+          <!--<li data-target="#carousel-example-generic" data-slide-to="1" class="active"></li>-->
+      <!--</ol>-->
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner">
+          <!--<div id="pagina1" class="item">-->
+          <!--</div>-->
 
-    <div class="pie">
-        <div class="total_izquierda">
-            <div class="titulo_total">Amount</div>
-            <div id="importe">0</div>
+          <div id="pagina2" class="item active">
+          </div>
 
-        </div>
-        <div class="total_derecha">
-            <div class="titulo_total">Transactions</div>
-            <div id="transacciones">0</div>
-        </div>
-    </div>
+          <!--<div id="pagina3" class="item">-->
+          <!--</div>-->
+
+          <!--<div id="pagina4" class="item">-->
+          <!--</div>-->
+      </div>
+
+  </div>
+
   </body>
 </html>

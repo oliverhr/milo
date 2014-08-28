@@ -10,6 +10,8 @@ html, body {
     min-height: 100%;
     overflow:auto;
     padding-bottom: 180px;
+    background-color: black;
+    color: white;
 }
 
 a {
@@ -108,4 +110,35 @@ td {
 #importe {
     font-size: 70px;
     vertical-align: middle;
+}
+
+#map-canvas {
+    width: 100%;
+    height: 100%;
+    position: relative;
+ }
+
+path {
+    stroke: white;
+    stroke-width: 0.25px;
+    fill: grey;
+}
+
+.container_grafico {
+    width: 50%;
+    float: left;
+}
+
+.titulo_grafico {
+    float: none;
+    width: 100%;
+    vertical-align: middle;
+    font-family: "courier new", Courier;
+    font-size: 25px;
+    padding-bottom: 10px;
+}
+
+.grafico {
+    width: 500px;
+    height: 300px;
 }
