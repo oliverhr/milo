@@ -14,7 +14,6 @@ html, body {
 .wrapper {
     min-height: 100%;
     overflow:auto;
-    padding-bottom: 180px;
     background: #272a31;
     color: white;
 }
@@ -130,12 +129,6 @@ text-align: center;
 box-sizing:border-box;
 }
 
-.container_grafico:first-child{
-    margin-left: 15px;
-}
-.container_grafico:last-child{
-    margin-right: 15px;
-}
 .widget{
     background: #45464D;
 }

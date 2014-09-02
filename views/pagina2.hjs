@@ -104,14 +104,14 @@
 </script>
 <div class="row">
 
-    <div class="container_grafico col-md-4">
+    <div class="container_grafico large-4 columns">
     <div class="widget">
         <div class="titulo_grafico">Importe total por tipo de servicio</div>
         <canvas id="total_accion_pie" class="grafico" height="300px" width="400px"></canvas>
     </div>   
     </div>
 
-    <div class="container_grafico col-md-8">
+    <div class="container_grafico large-8 columns">
     <div class="widget">
         <div class="titulo_grafico">Importe total por tipo de servicio</div>
         <canvas id="total_accion_bar" class="grafico" height="300px" width="400px"></canvas>
@@ -121,14 +121,14 @@
 
 <div class="row">
 
-    <div class="container_grafico col-md-8">
+    <div class="container_grafico large-8 columns">
         <div class="widget">
         <div class="titulo_grafico">Importe total por afiliado</div>
         <canvas id="total_afiliado_pie" class="grafico" height="300px" width="400px"></canvas>
         </div>
     </div>
 
-    <div class="container_grafico col-md-4">
+    <div class="container_grafico large-4 columns">
         <div class="widget">
         <div class="titulo_grafico">Importe total por afiliado</div>
         <canvas id="total_afiliado_bar" class="grafico" height="300px" width="400px"></canvas>
