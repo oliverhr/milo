@@ -2,15 +2,20 @@
     margin: 0;
 }
 html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-animation: fadeBody 1s ease-in;
+    -moz-animation: fadeBody 1s ease-in;
+    font-family: sans-serif;
     height: 100%;
-    background-color: black;
+    background: #272a31;
     color: white;
 }
 .wrapper {
     min-height: 100%;
     overflow:auto;
     padding-bottom: 180px;
-    background-color: black;
+    background: #272a31;
     color: white;
 }
 
@@ -79,17 +84,13 @@ td {
 }
 
 .total_izquierda {
-    float: right;
     padding-top: 40px;
-    width: 48%;
     border-left: 1px dashed white;
     height: 100%;
 }
 
 .total_derecha {
-    float: left;
     padding-top: 40px;
-    width: 50%;
     height: 100%;
 }
 
@@ -125,20 +126,31 @@ path {
 }
 
 .container_grafico {
-    width: 50%;
-    float: left;
+text-align: center;
+box-sizing:border-box;
 }
 
+.container_grafico:first-child{
+    margin-left: 15px;
+}
+.container_grafico:last-child{
+    margin-right: 15px;
+}
+.widget{
+    background: #45464D;
+}
 .titulo_grafico {
     float: none;
     width: 100%;
     vertical-align: middle;
-    font-family: "courier new", Courier;
-    font-size: 25px;
+    font-family: "Roboto-Medium";
+    font-size: 15px;
     padding-bottom: 10px;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 .grafico {
-    width: 500px;
+    width: 90%;
     height: 300px;
 }

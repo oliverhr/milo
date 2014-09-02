@@ -102,24 +102,37 @@
 
     });
 </script>
+<div class="row">
 
-<div class="container_grafico">
-    <div class="titulo_grafico">Importe total por tipo de servicio</div>
-    <canvas id="total_accion_pie" class="grafico" height="300px" width="400px"></canvas>
+    <div class="container_grafico col-md-4">
+    <div class="widget">
+        <div class="titulo_grafico">Importe total por tipo de servicio</div>
+        <canvas id="total_accion_pie" class="grafico" height="300px" width="400px"></canvas>
+    </div>   
+    </div>
+
+    <div class="container_grafico col-md-8">
+    <div class="widget">
+        <div class="titulo_grafico">Importe total por tipo de servicio</div>
+        <canvas id="total_accion_bar" class="grafico" height="300px" width="400px"></canvas>
+    </div>
+    </div>
 </div>
 
-<div class="container_grafico">
-    <div class="titulo_grafico">Importe total por tipo de servicio</div>
-    <canvas id="total_accion_bar" class="grafico" height="300px" width="400px"></canvas>
-</div>
+<div class="row">
 
-<div class="container_grafico">
-    <div class="titulo_grafico">Importe total por afiliado</div>
-    <canvas id="total_afiliado_pie" class="grafico" height="300px" width="400px"></canvas>
-</div>
+    <div class="container_grafico col-md-8">
+        <div class="widget">
+        <div class="titulo_grafico">Importe total por afiliado</div>
+        <canvas id="total_afiliado_pie" class="grafico" height="300px" width="400px"></canvas>
+        </div>
+    </div>
 
-<div class="container_grafico">
-    <div class="titulo_grafico">Importe total por afiliado</div>
-    <canvas id="total_afiliado_bar" class="grafico" height="300px" width="400px"></canvas>
-</div>
+    <div class="container_grafico col-md-4">
+        <div class="widget">
+        <div class="titulo_grafico">Importe total por afiliado</div>
+        <canvas id="total_afiliado_bar" class="grafico" height="300px" width="400px"></canvas>
+        </div>
+    </div>
 
+</div>
