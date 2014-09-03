@@ -28,7 +28,7 @@
             var labels = [];
             var dataset = { label: 'Test',
                             fillColor: "rgba(220,220,220,0.5)",
-                            strokeColor: "rgba(220,220,220,0.8)",
+                            strokeColor: "rgba(220,220,220,0.1)",
                             highlightFill: "rgba(220,220,220,0.75)",
                             highlightStroke: "rgba(220,220,220,1)"
             }
@@ -61,11 +61,11 @@
 
 
                 var options = {
-                    segmentShowStroke : true,
+                    segmentShowStroke : false,
                     segmentStrokeColor : "#fff",
                     segmentStrokeWidth : 2,
-                    percentageInnerCutout : 50, // This is 0 for Pie charts
-                    animation: false,
+                    percentageInnerCutout : 90, // This is 0 for Pie charts
+                    animation: true,
                     animateRotate : false,
                     animateScale : false,
                     legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
@@ -106,14 +106,14 @@
 
     <div class="container_grafico large-4 columns">
     <div class="widget">
-        <div class="titulo_grafico">Importe total por tipo de servicio</div>
-        <canvas id="total_accion_pie" class="grafico" height="300px" width="400px"></canvas>
+        <h6 class="titulo_grafico">Importe total por tipo de servicio</h6>
+        <canvas id="total_accion_pie" class="grafico" height="600px" width="300"></canvas>
     </div>   
     </div>
 
     <div class="container_grafico large-8 columns">
     <div class="widget">
-        <div class="titulo_grafico">Importe total por tipo de servicio</div>
+        <h6 class="titulo_grafico">Importe total por tipo de servicio</h6>
         <canvas id="total_accion_bar" class="grafico" height="300px" width="400px"></canvas>
     </div>
     </div>
@@ -123,14 +123,14 @@
 
     <div class="container_grafico large-8 columns">
         <div class="widget">
-        <div class="titulo_grafico">Importe total por afiliado</div>
+        <h6 class="titulo_grafico">Importe total por afiliado</h6>
         <canvas id="total_afiliado_pie" class="grafico" height="300px" width="400px"></canvas>
         </div>
     </div>
 
     <div class="container_grafico large-4 columns">
         <div class="widget">
-        <div class="titulo_grafico">Importe total por afiliado</div>
+        <h6 class="titulo_grafico">Importe total por afiliado</h6>
         <canvas id="total_afiliado_bar" class="grafico" height="300px" width="400px"></canvas>
         </div>
     </div>
