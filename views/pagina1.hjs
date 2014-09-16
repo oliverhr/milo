@@ -1,5 +1,13 @@
 <script src="javascripts/moment.min.js"></script>
-<link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <title>{{ title }}</title>
+    <script src="javascripts/jquery-2.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="stylesheets/foundation.css" />
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
 
 <script>
 
@@ -26,7 +34,7 @@
 
         socket.on('message', function(message){
             var datos = JSON.parse(message);
-            // console.log(datos);
+              console.log(datos);
 
             if (datos.tipo) {
                 var titulo = datos.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
@@ -35,21 +43,27 @@
                 var titulo = '';
             }
 
+                if (datos.nombre_estado == 'Aprobada')
+                  datos.nombre_estado = '✔';
+                else
+                  datos.nombre_estado = '✖';
+
             if (datos.fecha) {
 
                 var fila = $('#fila_' + datos.id);
 
-                var html = '<tr id="fila_' + datos.id + '">' +
-                        '<td>' + datos.fecha + '</td>' +
-                        '<td>' + datos.canal + '</td>';
+                var html = 
+                        '<tr id="fila_' + datos.id + '">';
 
                 if (datos.excepcion) {
-                    html = html + '<td>' + datos.nombre_estado + ' (' + datos.excepcion + ')</td>';
+                    html = html + '<td> <span class="redSign">' + datos.nombre_estado + '</span> <br> (' + datos.excepcion + ')</td>';
                 } else {
-                    html = html + '<td>' + datos.nombre_estado + '</td>';
+                    html = html + '<td class="greenSign">' + datos.nombre_estado + '</td>';
                 }
 
                 html = html +
+                        '<td>' + datos.fecha + '</td>' +
+                        '<td>' + datos.canal + '</td>' +
                         '<td>' + datos.nombre_accion + '</td>' +
                         '<td>' + datos.usuario.alias + '</td>' +
                         '<td>' + datos.importe_fmt_abs + '</td>';
@@ -90,15 +104,15 @@
     });
 </script>
 
-  <div>
-    <div id="wrapper">
+  <div class="row">
+    <div id="wrapper" class="large-9 columns">
       <div id="filas">
           <table id="tabla">
               <thead>
               <tr>
+                  <th>State</th>
                   <th>Date</th>
                   <th>Channel</th>
-                  <th>State</th>
                   <th>Service</th>
                   <th>From</th>
                   <th>Amount</th>
@@ -112,16 +126,24 @@
               </tbody>
           </table>
       </div>
-    </div>
 
-    <div class="pie">
-      <div class="total_izquierda">
-          <div class="titulo_total">Amount</div>
-          <div id="importe">0</div>
-      </div>
-      <div class="total_derecha">
-          <div class="titulo_total">Transactions</div>
-          <div id="transacciones">0</div>
-      </div>
+    </div>
+    <div class="total_izquierda large-3 columns">
+        <div class="rightWidget">
+          <h1 id="importe">0</h1>
+          <span class="titulo_total">Amount</span>
+         </div> 
+        <div class="rightWidget">
+          <h1 id="transacciones">0</h1>
+          <span class="titulo_total">Transactions</span>
+        </div>
+        <div class="rightWidget">
+          <h1 id="importe">0</h1>
+          <span class="titulo_total">Fees</span>
+         </div> 
+        <div class="rightWidget">
+          <h1 id="transacciones">0</h1>
+          <span class="titulo_total">Completed Transactions</span>
+        </div>
     </div>
   </div>

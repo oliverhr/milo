@@ -1,2 +1,37 @@
-<div>Página 4
-</div>
+<script src="javascripts/moment.min.js"></script>
+
+    <title>{{ title }}</title>
+    <script src="javascripts/jquery-2.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="stylesheets/foundation.css" />
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="javascripts/datamaps.world.min.js"></script>
+
+<div id="container" style="position: relative; width: 100%; height: 100%;"></div>
+
+<div class="bottomLine"></div>
+
+<script>
+    var map = new Datamap({
+    	element: document.getElementById('container'),
+    	projection: 'mercator',
+
+    	fills:{
+    		defaultFill: 'rgba(255,255,255,0.2)'
+    	},
+    	geographyConfig: {
+    		borderWidth: 0,
+            hideAntarctica: true,
+            highlightBorderWidth: 0
+
+    	}
+
+    });
+</script>
