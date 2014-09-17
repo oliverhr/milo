@@ -117,7 +117,7 @@ app.get('/pagina1',  paginas.pagina1);
 app.get('/log',  paginas.pagina1);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
-app.get('/pagina4', paginas.pagina4);
+app.get('/mapa', paginas.pagina4);
 
 
 server = http.createServer(app);
