@@ -5,16 +5,40 @@
 }
 
 @font-face {
-    font-family: 'titilliumBold';
-    src: url('/static/fonts/TitilliumText25L002-webfont.ttf') format('truetype');
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular.ttf') format('truetype');
 
 }
+@font-face {
+    font-family: 'Roboto-Light';
+    src: url('../fonts/Roboto-Light.ttf') format('truetype');
 
+}
+@font-face {
+    font-family: 'Roboto-Medium';
+    src: url('../fonts/Roboto-Medium.ttf') format('truetype');
+
+}
+@font-face {
+    font-family: 'Roboto-Italic';
+    src: url('../fonts/Roboto-Italic.ttf') format('truetype');
+
+}
+@font-face {
+    font-family: 'Roboto-Thin';
+    src: url('../fonts/Roboto-Thin.ttf') format('truetype');
+
+}
+@font-face {
+    font-family: 'Roboto-Bold';
+    src: url('../fonts/Roboto-Bold.ttf') format('truetype');
+
+}
 
 body {
     background: rgb(35,35,40);
     color: white;
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     height: 100%;   
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
