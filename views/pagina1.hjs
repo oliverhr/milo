@@ -7,10 +7,11 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <link rel="stylesheet" href="stylesheets/foundation.css" />
 
+  <link rel="stylesheet" href='/stylesheets/font-awesome.min.css'>
+
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
 <script>
-
     Number.prototype.formatMoney = function(c, d, t){
         var n = this,
                 c = isNaN(c = Math.abs(c)) ? 2 : c,
@@ -20,6 +21,12 @@
                 i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
                 j = (j = i.length) > 3 ? j % 3 : 0;
         return '$'+s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "")+' MXN';
+    };
+
+    function cutString(s, n){
+        var cut= s.indexOf(' ', n);
+        if(cut== -1) return s;
+        return s.substring(0, cut)
     };
 
     $(document).ready(function() {
@@ -34,7 +41,17 @@
 
         socket.on('message', function(message){
             var datos = JSON.parse(message);
-              console.log(datos);
+              //console.log(datos);
+
+            if (datos.codtran){
+              var idTran = datos.codtran;
+              var idSBST = idTran.substring(22, 33);
+            }
+            
+            if (datos.usuario.alias){
+              var s = datos.usuario.alias;
+              usrSBST = cutString(s, 8);
+            }  
 
             if (datos.tipo) {
                 var titulo = datos.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
@@ -42,11 +59,6 @@
             } else {
                 var titulo = '';
             }
-
-                if (datos.nombre_estado == 'Aprobada')
-                  datos.nombre_estado = '✔';
-                else
-                  datos.nombre_estado = '✖';
 
             if (datos.fecha) {
 
@@ -56,16 +68,17 @@
                         '<tr id="fila_' + datos.id + '">';
 
                 if (datos.excepcion) {
-                    html = html + '<td> <span class="redSign">' + datos.nombre_estado + '</span> <br> (' + datos.excepcion + ')</td>';
+                    //html = html + '<td> <span class="redSign">' + datos.nombre_estado + '</span> <br> (' + datos.excepcion + ')</td>';
+                    html = html + '<td> <span class="redSign fa fa-close"></span></td>';
                 } else {
-                    html = html + '<td class="greenSign">' + datos.nombre_estado + '</td>';
+                    html = html + '<td> <span class="greenSign fa fa-check"></span></td>';
                 }
 
                 html = html +
                         '<td>' + datos.fecha + '</td>' +
                         '<td>' + datos.canal + '</td>' +
                         '<td>' + datos.nombre_accion + '</td>' +
-                        '<td>' + datos.usuario.alias + '</td>' +
+                        '<td>' + usrSBST + '</td>' +
                         '<td>' + datos.importe_fmt_abs + '</td>';
 
                 if (datos.destino) {
@@ -75,7 +88,7 @@
                 }
 
                 html = html + '<td>' + datos.concepto + '</td>' +
-                        '<td>' + datos.codtran + '</td>' +
+                        '<td>' + idSBST + '</td>' +
                         '</tr>';
 
                 var reemplazar = false;
@@ -94,6 +107,24 @@
                 $('#transacciones').html(datos.datos.transacciones);
                 $('#importe').html(datos.datos.importe.formatMoney(2, '.', ','));
             }
+
+                    // Change the selector if needed
+        var $table = $('table.ofScroll'),
+            $bodyCells = $table.find('tbody tr:first').children(),
+            colWidth;
+        // Adjust the width of thead cells when window resizes
+        $(window).resize(function() {
+            // Get the tbody columns width array
+            colWidth = $bodyCells.map(function() {
+                return $(this).width();
+            }).get();
+            
+            // Set the width of thead columns
+            $table.find('thead tr').children().each(function(i, v) {
+                $(v).width(colWidth[i]);
+                console.log($(v).width(colWidth[i]));
+            });    
+        }).resize(); // Trigger resize handler
         }) ;
 
         socket.on('disconnect', function() {
@@ -104,10 +135,10 @@
     });
 </script>
 
-  <div class="row">
+  <div class="row tableLog">
     <div id="wrapper" class="large-9 columns">
       <div id="filas">
-          <table id="tabla">
+          <table id="tabla" class="ofScroll">
               <thead>
               <tr>
                   <th>State</th>
@@ -118,7 +149,7 @@
                   <th>Amount</th>
                   <th>To</th>
                   <th>Subject</th>
-                  <th>Transaction Code</th>
+                  <th>ID</th>
               </tr>
               </thead>
               <tbody>
