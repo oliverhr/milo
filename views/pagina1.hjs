@@ -41,18 +41,18 @@
 
         socket.on('message', function(message){
             var datos = JSON.parse(message);
-              //console.log(datos);
+              // console.log(datos);
+
+            //TODO cutString en nombre de usuario.
+            // var s = datos.usuario.alias;
+            // usrSBST = cutString(s, 8);
+            // console.log(usrSBST);
 
             if (datos.codtran){
               var idTran = datos.codtran;
               var idSBST = idTran.substring(22, 33);
             }
             
-            if (datos.usuario.alias){
-              var s = datos.usuario.alias;
-              usrSBST = cutString(s, 8);
-            }  
-
             if (datos.tipo) {
                 var titulo = datos.tipo.replace('_'+moment('08/06/2014').format('DDMMYYYY'),'');
                 var titulo = titulo.replace('_'+moment().format('DDMMYYYY'),'');
@@ -78,7 +78,7 @@
                         '<td>' + datos.fecha + '</td>' +
                         '<td>' + datos.canal + '</td>' +
                         '<td>' + datos.nombre_accion + '</td>' +
-                        '<td>' + usrSBST + '</td>' +
+                        '<td>' + datos.usuario.alias + '</td>' +
                         '<td>' + datos.importe_fmt_abs + '</td>';
 
                 if (datos.destino) {
@@ -122,7 +122,6 @@
             // Set the width of thead columns
             $table.find('thead tr').children().each(function(i, v) {
                 $(v).width(colWidth[i]);
-                console.log($(v).width(colWidth[i]));
             });    
         }).resize(); // Trigger resize handler
         }) ;
