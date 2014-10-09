@@ -31,13 +31,21 @@ if (environment == 'development') {
 
     var host_redis = 'localhost';
 } else {
-    var url_base = 'http://milo.pademobile.com/';
-    var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
-    var clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
+    if (environment == 'staging') {
+        var url_base = 'http://localhost:3000/';
+        var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
+        var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
-    var host_redis = 'localhost';
+        var host_redis = 'staging.pademobile.com';
+    } else {
+        var url_base = 'http://milo.pademobile.com/';
+        var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
+        var clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
 
-    process.env.PORT = 80;
+        var host_redis = 'localhost';
+
+        process.env.PORT = 80;
+    }
 }
 
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -118,8 +126,7 @@ app.get('/pagina1',  paginas.log);
 app.get('/log/:pais?*',  paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
-app.get('/mapa', paginas.pagina4);
-
+app.get('/mapa/:pais?*', paginas.mapa);
 
 server = http.createServer(app);
 

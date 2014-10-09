@@ -10,6 +10,6 @@ exports.pagina3 = function(req, res){
     res.render('pagina3', {  });
 };
 
-exports.pagina4 = function(req, res){
-    res.render('pagina4', {  });
+exports.mapa = function(req, res){
+    res.render('mapa', { 'pais': req.params.pais });
 };
