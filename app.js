@@ -36,7 +36,7 @@ if (environment == 'development') {
         var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
         var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
-        var host_redis = 'staging.pademobile.com';
+        var host_redis = 'repos.pademobile.com';
     } else {
         var url_base = 'http://milo.pademobile.com/';
         var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
