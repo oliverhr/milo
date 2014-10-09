@@ -1,5 +1,5 @@
-exports.pagina1 = function(req, res){
-    res.render('pagina1', {  });
+exports.log = function(req, res) {
+    res.render('log', { 'pais': req.params.pais });
 };
 
 exports.pagina2 = function(req, res){

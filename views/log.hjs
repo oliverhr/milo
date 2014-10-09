@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log en tiempo real {{ pais }}</title>
+    <script src="/javascripts/jquery-2.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/foundation.css" />
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <!-- Latest compiled and minified JavaScript -->
+
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+    <script src="/javascripts/moment.min.js"></script>
+    <script src="/javascripts/money.min.js"></script>
+    <script src="/javascripts/accounting.min.js"></script>
+
+    <link rel="stylesheet" href='/stylesheets/font-awesome.min.css'>
+
+    <script>
+        Number.prototype.formatMoney = function(pais){
+
+            switch (pais) {
+                case 'MX' :
+                    var divisa_pais = 'MXN';
+                    break;
+                case 'ES' :
+                    var divisa_pais = 'EUR';
+                    break;
+                default:
+                    var divisa_pais = 'USD';
+            }
+
+            return accounting.formatMoney(this, {
+                symbol: divisa_pais,
+                format: "%v %s"
+            });
+        };
+
+        $(document).ready(function() {
+
+            var socket = io.connect();
+            var content = $('#filas');
+
+            socket.on('connect', function() {
+                console.log('Conectado - página 1!');
+            });
+
+            socket.on('message', function(message){
+
+                // console.log(message);
+
+                if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
+                    (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
+                    return 0;
+                }
+
+                var datos = JSON.parse(message);
+
+                var pais = '{{ pais }}'.toUpperCase();
+
+                switch(datos.canal_mensaje) {
+
+
+                    case 'pademobile_log_total' :
+                        console.log(datos);
+                        if (pais == '') {
+                            $('#transacciones').html(datos.datos.transacciones);
+                            $('#importe').html(datos.datos.importe.formatMoney(pais));
+                            $('#comisiones').html(datos.datos.comisiones.formatMoney(pais));
+                            $('#transacciones_completadas').html(datos.datos.transacciones_conimporte);
+                        } else {
+                            if (datos.datos[pais] == null) {
+                                var cero = 0;
+                                $('#transacciones').html(cero);
+                                $('#importe').html(cero.formatMoney(pais));
+                                $('#comisiones').html(cero.formatMoney(pais));
+                                $('#transacciones_completadas').html(cero);
+                            } else {
+                                $('#transacciones').html(datos.datos[pais].transacciones);
+                                $('#importe').html(datos.datos[pais].importe.formatMoney(pais));
+                                $('#comisiones').html(datos.datos[pais].comisiones.formatMoney(pais));
+                                $('#transacciones_completadas').html(datos.datos[pais].transacciones_conimporte);
+                            }
+                        }
+
+                        break;
+
+                    case 'pademobile_log_transaccion' :
+
+                        if ((pais == datos.pais) || (pais == '')) {
+
+                            var idTran = datos.codtran;
+                            var idSBST = idTran.substring(22, 33);
+
+                            var fila = $('#fila_' + datos.id);
+
+                            var html =
+                                    '<tr id="fila_' + datos.id + '">';
+
+                            if (datos.excepcion) {
+                                html = html + '<td> <span class="redSign fa fa-close"></span></td>';
+                            } else {
+                                html = html + '<td> <span class="greenSign fa fa-check"></span></td>';
+                            }
+
+                            html = html +
+                                    '<td>' + datos.fecha + '</td>' +
+                                    '<td>' + datos.canal + '</td>' +
+                                    '<td>' + datos.nombre_accion + '</td>' +
+                                    '<td>' + datos.usuario.alias + '</td>' +
+                                    '<td>' + datos.importe_fmt_abs + '</td>';
+
+                            if (datos.destino) {
+                                html = html + '<td>' + datos.destino.alias + '</td>';
+                            } else {
+                                html = html + '<td>' + '(None)' + '</td>';
+                            }
+
+                            html = html + '<td>' + datos.concepto + '</td>' +
+                                    '<td>' + idSBST + '</td>' +
+                                    '</tr>';
+
+                            var reemplazar = false;
+
+                            if (fila.length != 0) {
+                                reemplazar = true;
+                                $(fila).replaceWith(html);
+                            } else {
+                                $("#tabla tbody").prepend(html);
+                            }
+
+                            $('#fila_' + datos.id).fadeOut(300).fadeIn(300);
+                        }
+
+                        break;
+                }
+
+
+                // Change the selector if needed
+                var $table = $('table.ofScroll'),
+                    $bodyCells = $table.find('tbody tr:first').children(),
+                    colWidth;
+                // Adjust the width of thead cells when window resizes
+                $(window).resize(function() {
+                    // Get the tbody columns width array
+                    colWidth = $bodyCells.map(function() {
+                        return $(this).width();
+                    }).get();
+
+                    // Set the width of thead columns
+                    $table.find('thead tr').children().each(function(i, v) {
+                        $(v).width(colWidth[i]);
+                    });
+                }).resize(); // Trigger resize handler
+            }) ;
+
+            socket.on('disconnect', function() {
+                console.log('disconnected');
+                // content.html("<b>Disconnected!</b>");
+            });
+
+        });
+    </script>
+</head>
+<body>
+  <div class="row tableLog">
+    <div id="wrapper" class="large-9 columns">
+      <div id="filas">
+          <table id="tabla" class="ofScroll">
+              <thead>
+              <tr>
+                  <th>State</th>
+                  <th>Date</th>
+                  <th>Channel</th>
+                  <th>Service</th>
+                  <th>From</th>
+                  <th>Amount</th>
+                  <th>To</th>
+                  <th>Subject</th>
+                  <th>ID</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+          </table>
+      </div>
+
+    </div>
+    <div class="total_izquierda large-3 columns">
+        <div class="rightWidget">
+          <h1 id="importe">0</h1>
+          <span class="titulo_total">Amount</span>
+         </div> 
+        <div class="rightWidget">
+          <h1 id="transacciones">0</h1>
+          <span class="titulo_total">Transactions</span>
+        </div>
+        <div class="rightWidget">
+          <h1 id="comisiones">0</h1>
+          <span class="titulo_total">Fees</span>
+         </div> 
+        <div class="rightWidget">
+          <h1 id="transacciones_completadas">0</h1>
+          <span class="titulo_total">Completed Transactions</span>
+        </div>
+    </div>
+  </div>
+</body>

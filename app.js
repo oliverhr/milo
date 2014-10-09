@@ -7,12 +7,14 @@ var express = require('express');
 var routes = require('./routes');
 var paginas = require('./routes/paginas');
 var http = require('http');
+var https = require('https');
 var path = require('path');
-var moment = require('moment');
 var app = express();
 var passport = require('passport')
     , GoogleStrategy = require('passport-google').Strategy
     , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+var acumulador = require('./acumulador.js');
+var transacciones_pademobile = require('./acumuladores/transacciones_pademobile.js');
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in passport require a `validate` function, which accept
@@ -27,7 +29,7 @@ if (environment == 'development') {
     var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
     var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
-    var host_redis = 'repos.pademobile.com';
+    var host_redis = 'localhost';
 } else {
     var url_base = 'http://milo.pademobile.com/';
     var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
@@ -112,9 +114,8 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/', ensureLoggedIn('/auth/google'), routes.index);
-// app.get('/', routes.index);
-app.get('/pagina1',  paginas.pagina1);
-app.get('/log',  paginas.pagina1);
+app.get('/pagina1',  paginas.log);
+app.get('/log/:pais?*',  paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa', paginas.pagina4);
@@ -133,110 +134,45 @@ console.log('info', 'connected to redis server');
 
 var io = require('socket.io');
 
-function acumular(clave, objeto, criterio, redis_cli, client) {
-    // console.log('Acumulando '+criterio+' en '+clave);
-    if (objeto.importe != null) {
-        redis_cli.get(clave, function (err, reply) {
-            // reply is null when the key is missing
-            if (reply != null) {
-                var total = JSON.parse(reply);
-                total = total.datos;
-            } else {
-                var total = {};
-            }
+var divisas = {};
 
-            if (criterio == 'usuario') {
-                if (objeto.usuario.telefono.indexOf('AFIL') > -1) {
-                    var valor_criterio = objeto.usuario.alias;
-                } else {
-                    var valor_criterio = 'Usuario';
-                }
-            } else {
-                var valor_criterio = objeto[criterio];
-            }
-
-            if (total[valor_criterio] == null) {
-                total[valor_criterio] = 0;
-            }
-
-            if (objeto.nombre_estado == 'Aprobada') {
-                total[valor_criterio] = total[valor_criterio] + Math.abs(objeto.importe);
-            }
-
-            var resultado = JSON.stringify({ "tipo": clave, "datos": total});
-
-            redis_cli.set(clave, resultado);
-
-            client.send(resultado);
-
-            return resultado;
-        });
-    }
-}
-
-function acumular_total_dia(clave, objeto, redis_cli, client) {
-    // console.log('Acumulando '+criterio+' en '+clave);
-    if (objeto.importe != null) {
-        redis_cli.get(clave, function (err, reply) {
-            // reply is null when the key is missing
-            if (reply != null) {
-                var total = JSON.parse(reply);
-                total = total.datos;
-            } else {
-                var total = { "transacciones": 0, "importe": 0 };
-            }
-
-            if (objeto.nombre_estado == 'Aprobada') {
-                total.transacciones = total.transacciones + 1;
-                total.importe = total.importe + Math.abs(objeto.importe);
-            }
-
-            var resultado = JSON.stringify({ "tipo": clave, "datos": total});
-
-            redis_cli.set(clave, resultado);
-
-            client.send(resultado);
-
-            return resultado;
-        });
-    }
-}
-
+var options = {
+    host: 'www.pademobile.com',
+    port: 50,
+    path: '/ws/divisas.py/listado',
+    method: 'GET'
+};
 
 if (!module.parent) {
     const socket  = io.listen(server);
 
-    socket.on('connection', function(client) {
-        console.log('antes de suscribirnos a redis '+host_redis);
+    https.request(options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            divisas = JSON.parse(chunk);
 
-        const subscribe = redis.createClient('6379',host_redis);
-        const redis_cli = redis.createClient('6379',host_redis);
+            divisas = divisas.divisas;
 
-        console.log('Suscribiéndonos');
+            divisas.push(
+                {"cambio_venta":"1","datos_divisa":{"abreviatura":"USD","simbolo":"USD","formato":"$%.2f","prefijo":"$","decimales":2, "id":412,"sufijo":"dólares"},
+                    "abreviatura":"USD","formato":"$%.2f","simbolo_divisa":"USD","precision":2,"cambio_compra":"1","cambio_referencia":"1","nombre":"Dólares USA","placeholder_divisa":"0.00 USD"});
 
-        subscribe.on("subscribe", function (channel, count) {
-            console.log('Nos hemos suscrito al canal: ' + channel + '.Somos el número: ' + count);
+            // divisas = { 'canal_mensaje': 'pademobile_divisas', 'divisas': divisas.divisas };
+            // console.log(divisas);
+
+            socket.on('connection', function(client) {
+                console.log('antes de suscribirnos a redis '+host_redis);
+
+                const subscribe = redis.createClient('6379',host_redis);
+                const redis_cli = redis.createClient('6379',host_redis);
+
+                console.log('Suscribiéndonos');
+
+                var ac = new acumulador.AcumuladorMilo('transacciones-pademobile', redis_cli, subscribe, socket, client, divisas);
+                ac.inicializar(transacciones_pademobile.procesar);
+
+            });
         });
+    }).end();
 
-        subscribe.on("message", function (channel, message) {
-            socket.emit('msg', {'msg': message});
-            client.send(message);
-
-            var objeto = JSON.parse(message);
-
-
-            var fecha = new Date(moment(objeto.fecha, "DD/MM/YYYY HH:mm:ss"));
-
-            // aquí deberíamos ir acumulando los diferentes totales, y entregarlos a cada página?
-            var total_dia = acumular_total_dia("total_" + moment(fecha).format('DDMMYYYY'), objeto, redis_cli, client);
-
-            var totales = acumular("total_canal_" + moment(fecha).format('DDMMYYYY'), objeto, 'canal', redis_cli, client);
-            totales = acumular("total_accion_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_accion', redis_cli, client);
-            totales = acumular("total_estado_" + moment(fecha).format('DDMMYYYY'), objeto, 'nombre_estado', redis_cli, client);
-            totales = acumular("total_afiliado_" + moment(fecha).format('DDMMYYYY'), objeto, 'usuario', redis_cli, client);
-        });
-
-        subscribe.subscribe("transacciones-pademobile");
-
-    });
 }
