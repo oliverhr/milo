@@ -112,7 +112,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/auth/google' }),
     function(req, res) {
         // Successful authentication, redirect home.
-        res.redirect('/');
+        res.redirect('/log');
     });
 
 app.get('/logout', function(req, res){
@@ -120,9 +120,9 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-app.get('/', ensureLoggedIn('/auth/google'), routes.index);
+// app.get('/', ensureLoggedIn('/auth/google'), routes.index);
 app.get('/pagina1',  paginas.log);
-app.get('/log/:pais?*', paginas.log);
+app.get('/log/:pais?*', ensureLoggedIn('/auth/google'), paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa/:pais?*', paginas.mapa);
