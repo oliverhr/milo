@@ -102,6 +102,10 @@
                             var idTran = datos.codtran;
                             var idSBST = idTran.substring(22, 33);
 
+
+                            var dateRed = datos.fecha;
+                            var miniDate = dateRed.substring(11, 20);
+
                             var fila = $('#fila_' + datos.id);
 
                             var html =
@@ -123,7 +127,7 @@
 
 
                             html = html +
-                                    '<td class="date_col">' + datos.fecha + '</td>' +
+                                    '<td class="date_col">' + miniDate + '</td>' +
                                     '<td class="channel_col">' + datos.canal + '</td>' +
                                     '<td class="service_col">' + datos.nombre_accion + '</td>' +
                                     '<td class="userName_col">' + datos.usuario.alias + '</td>' +
