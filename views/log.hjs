@@ -8,6 +8,10 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <link rel="stylesheet" href="/stylesheets/foundation.css" />
 
+    <link rel="stylesheet" href='/stylesheets/font-awesome.min.css'>
+
+    <link rel="stylesheet" href='/stylesheets/resizableColumns.css'>
+
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
     <!-- Latest compiled and minified JavaScript -->
@@ -19,7 +23,8 @@
     <script src="/javascripts/money.min.js"></script>
     <script src="/javascripts/accounting.min.js"></script>
 
-    <link rel="stylesheet" href='/stylesheets/font-awesome.min.css'>
+    <script src="/javascripts/resizableColumns.min.js"></script>
+
 
     <script>
         Number.prototype.formatMoney = function(pais){
@@ -52,7 +57,7 @@
 
             socket.on('message', function(message){
 
-                // console.log(message);
+                console.log(message);
 
                 if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
                     (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
@@ -102,17 +107,26 @@
                             var html =
                                     '<tr id="fila_' + datos.id + '">';
 
-                            if (datos.excepcion) {
-                                html = html + '<td> <span class="redSign fa fa-close"></span></td>';
-                            } else {
-                                html = html + '<td> <span class="greenSign fa fa-check"></span></td>';
+                            if (datos.estado == '1') {
+                                html = html + '<td class="state_col"> <span class="greenSign fa fa-check-circle"></span></td>';
+                            } else if (datos.estado == '-2') {
+                                html = html + '<td class="state_col"> <span class="redSign fa fa-times-circle"></span></td>';
+                            } else if (datos.estado == '-1') {
+                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-exclamation-circle"></span></td>';
+                            } else if (datos.estado == '0') {
+                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-question-circle"></span></td>';
+                            }
+                            else{
+                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-circle"></span></td>';
                             }
 
+
+
                             html = html +
-                                    '<td>' + datos.fecha + '</td>' +
-                                    '<td>' + datos.canal + '</td>' +
-                                    '<td>' + datos.nombre_accion + '</td>' +
-                                    '<td>' + datos.usuario.alias + '</td>' +
+                                    '<td class="date_col">' + datos.fecha + '</td>' +
+                                    '<td class="channel_col">' + datos.canal + '</td>' +
+                                    '<td class="service_col">' + datos.nombre_accion + '</td>' +
+                                    '<td class="userName_col">' + datos.usuario.alias + '</td>' +
                                     '<td>' + datos.importe_fmt_abs + '</td>';
 
                             if (datos.destino) {
@@ -140,23 +154,24 @@
                         break;
                 }
 
+                // // Change the selector if needed
+                // var $table = $('table.ofScroll'),
+                //     $bodyCells = $table.find('tbody tr:first').children(),
+                //     colWidth;
+                // // Adjust the width of thead cells when window resizes
+                // $(window).resize(function() {
+                //     // Get the tbody columns width array
+                //     colWidth = $bodyCells.map(function() {
+                //         return $(this).width();
+                //     }).get();
 
-                // Change the selector if needed
-                var $table = $('table.ofScroll'),
-                    $bodyCells = $table.find('tbody tr:first').children(),
-                    colWidth;
-                // Adjust the width of thead cells when window resizes
-                $(window).resize(function() {
-                    // Get the tbody columns width array
-                    colWidth = $bodyCells.map(function() {
-                        return $(this).width();
-                    }).get();
+                //     // Set the width of thead columns
+                //     $table.find('thead tr').children().each(function(i, v) {
+                //         $(v).width(colWidth[i]);
+                //     });
+                // }).resize(); // Trigger resize handler
+            $('table').resizableColumns();
 
-                    // Set the width of thead columns
-                    $table.find('thead tr').children().each(function(i, v) {
-                        $(v).width(colWidth[i]);
-                    });
-                }).resize(); // Trigger resize handler
             }) ;
 
             socket.on('disconnect', function() {
@@ -174,15 +189,15 @@
           <table id="tabla" class="ofScroll">
               <thead>
               <tr>
-                  <th>State</th>
-                  <th>Date</th>
-                  <th>Channel</th>
-                  <th>Service</th>
-                  <th>From</th>
-                  <th>Amount</th>
-                  <th>To</th>
-                  <th>Subject</th>
-                  <th>ID</th>
+                  <th class="state_col">State</th>
+                  <th class="date_col">Date</th>
+                  <th class="channel_col">Channel</th>
+                  <th class="service_col">Service</th>
+                  <th class="userName_col">From</th>
+                  <th class="">Amount</th>
+                  <th class="">To</th>
+                  <th class="">Subject</th>
+                  <th class="">ID</th>
               </tr>
               </thead>
               <tbody>
@@ -194,20 +209,28 @@
     </div>
     <div class="total_izquierda large-3 columns">
         <div class="rightWidget">
+        <div class="rwCell">
           <h1 id="importe">0</h1>
-          <span class="titulo_total">Amount</span>
+          <span class="titulo_total">MANAGED AMOUNT</span>            
+        </div>
          </div> 
         <div class="rightWidget">
+        <div class="rwCell">
           <h1 id="transacciones">0</h1>
-          <span class="titulo_total">Transactions</span>
+          <span class="titulo_total">TRANSACTIONS</span>
+        </div>
         </div>
         <div class="rightWidget">
+        <div class="rwCell">
           <h1 id="comisiones">0</h1>
-          <span class="titulo_total">Fees</span>
-         </div> 
+          <span class="titulo_total">TOTAL FEES</span>
+        </div>
+        </div> 
         <div class="rightWidget">
+        <div class="rwCell">
           <h1 id="transacciones_completadas">0</h1>
-          <span class="titulo_total">Completed Transactions</span>
+          <span class="titulo_total">MONEY TRANSACTIONS</span>
+        </div>
         </div>
     </div>
   </div>
