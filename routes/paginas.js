@@ -1,5 +1,5 @@
-exports.pagina1 = function(req, res){
-    res.render('pagina1', {  });
+exports.log = function(req, res) {
+    res.render('log', { 'pais': req.params.pais });
 };
 
 exports.pagina2 = function(req, res){
@@ -10,6 +10,6 @@ exports.pagina3 = function(req, res){
     res.render('pagina3', {  });
 };
 
-exports.pagina4 = function(req, res){
-    res.render('pagina4', {  });
+exports.mapa = function(req, res){
+    res.render('mapa', { 'pais': req.params.pais });
 };

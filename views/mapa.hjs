@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa {{ title }}</title>
+    <script src="/javascripts/jquery-2.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/foundation.css" />
+
+	<link rel="stylesheet" href='/stylesheets/font-awesome.min.css'>
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <script src="/javascripts/d3.v3.min.js"></script>
+    <script src="/javascripts/topojson.v1.min.js"></script>
+    <script src="/javascripts/datamaps.world.min.js"></script>
+
+    <script>
+        var socket = io.connect();
+
+        var latitudes = [ { "x": 18.4583254, "y": -97.4843226},
+            { "x": 30.9871264, "y": 110.2839651},
+            { "x": 29.0784761, "y": -110.9793706},
+            { "x": 24.1164679, "y": -110.3032952},
+            { "x": 23.2467867, "y": -106.4221208},
+            { "x": 24.0289606, "y": -104.645293},
+            { "x": 21.8890872, "y": -102.2919885},
+        ];
+
+        socket.on('connect', function() {
+            console.log('Conectado - página 1!');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('disconnected');
+            // content.html("<b>Disconnected!</b>");
+        });
+
+        var map = {};
+
+        $(document).ready(function() {
+            var socket = io.connect();
+            var content = $('#filas');
+
+            var fechaactual = null;
+
+            socket.on('connect', function() {
+                console.log('Conectado - página 1!');
+            });
+
+            map = new Datamap({
+                    	    	element: document.getElementById('mapContainer'),
+                    	    	projection: 'mercator',
+                    	    	scope: 'world',
+                    	    	geographyConfig: {
+                	    		borderWidth: 0,
+                                hideAntarctica: true,
+                                popupOnHover: false,
+                                highlightBorderWidth: 0
+                	    	},
+
+                    	    	fills: {
+                		        'PDM': 'rgba(241,90,36,0.7)',
+                        		        defaultFill: 'rgba(255,255,255,0.2)',
+                                'BLU': 'rgba(141,30,56,0.7)',
+                                    defaultFill: 'rgba(255,255,255,0.2)'
+                	    	}
+            		});
+        });
+
+        socket.on('message', function(message){
+
+            // console.log(message);
+
+            if ((message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
+                return 0;
+            }
+
+            var datos = JSON.parse(message);
+
+            var pais = '{{ pais }}'.toUpperCase();
+
+            switch(datos.canal_mensaje) {
+                case 'pademobile_log_transaccion' :
+
+                    var item = latitudes[Math.floor(Math.random()*latitudes.length)];
+
+                    var radio = datos.importe;
+
+                    if (radio == null ) {
+                        radio = 3;
+                        var color = 'BLU';
+                    } else {
+                        radio = Math.floor(Math.abs(datos.importe) /10);
+                        var color = 'PDM';
+                    }
+
+                    // console.log(item.x+', '+item.y+'. Radio: '+ radio);
+
+                    var transactions = [{
+                        radius: radio,
+                        fillKey: color,
+                        latitude: item.x,
+                        longitude: item.y,
+                        descripcion: datos.descripcion,
+                        fecha: datos.fecha
+                    }];
+
+                    //draw bubbles for transactions :)
+                    map.bubbles(transactions, {
+                        popupTemplate: function (geo, data) {
+                            return ['<div class="hoverinfo">' +  data.descripcion,
+                                        '<br/>Fecha: ' +  data.fecha+
+                                '</div>'].join('');
+                        },
+                        borderWidth: 0,
+                        highlightBorderWidth: 0
+
+                    });
+
+                    break;
+            }
+        }) ;
+    </script>
+</head>
+
+<body>
+    <div id="mapContainer" class="mapView"></div>
+
+    <div class="bottomLine marquee">
+        <div>
+        <section>
+            <span class="barTitle">Transactions</span>
+            <span class="barElement">MEX 12,181 <span class="greenSign fa fa-arrow-up"></span></span>
+            <span class="barElement">ESP 1,238 <span class="redSign fa fa-arrow-down"></span></span>
+            <span class="barElement">USA 902 <span class="greenSign fa fa-arrow-up"></span></span>
+            <span class="barElement">ITA 902 <span class="greenSign fa fa-arrow-up"></span></span>
+
+            <span class="barTitle">Top Users MEX</span>
+            <span class="barElement">dgsalas</span>
+            <span class="barElement">diego_</span>
+            <span class="barElement">4492019221</span>
+
+            <span class="barTitle">Top Users USA</span>
+            <span class="barElement">1331292828</span>
+            <span class="barElement">1291822384</span>
+            <span class="barElement">1492019221</span>
+
+        </section>
+
+        <section>
+            <span class="barTitle">Transactions</span>
+            <span class="barElement">MEX 12,181 <span class="greenSign fa fa-arrow-up"></span></span>
+            <span class="barElement">ESP 1,238 <span class="redSign fa fa-arrow-down"></span></span>
+            <span class="barElement">USA 902 <span class="greenSign fa fa-arrow-up"></span></span>
+            <span class="barElement">ITA 902 <span class="greenSign fa fa-arrow-up"></span></span>
+
+            <span class="barTitle">Top Users MEX</span>
+            <span class="barElement">dgsalas</span>
+            <span class="barElement">diego_</span>
+            <span class="barElement">4492019221</span>
+
+            <span class="barTitle">Top Users USA</span>
+            <span class="barElement">1331292828</span>
+            <span class="barElement">1291822384</span>
+            <span class="barElement">1492019221</span>
+
+        </section>
+
+        </div>
+    </div>
+
+    <img class="poweredby" src="images/poweredby.svg">
+</body>
