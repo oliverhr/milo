@@ -100,7 +100,6 @@ passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 
-
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -123,7 +122,7 @@ app.get('/logout', function(req, res){
 
 app.get('/', ensureLoggedIn('/auth/google'), routes.index);
 app.get('/pagina1',  paginas.log);
-app.get('/log/:pais?*',  ensureLoggedIn('/auth/google'), paginas.log);
+app.get('/log/:pais?*', paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa/:pais?*', paginas.mapa);
