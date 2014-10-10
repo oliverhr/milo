@@ -17,40 +17,27 @@
     <script src="/javascripts/datamaps.world.min.js"></script>
 
     <script>
-
-
-
         var socket = io.connect();
+
+        var latitudes = [ { "x": 18.4583254, "y": -97.4843226},
+            { "x": 30.9871264, "y": 110.2839651},
+            { "x": 29.0784761, "y": -110.9793706},
+            { "x": 24.1164679, "y": -110.3032952},
+            { "x": 23.2467867, "y": -106.4221208},
+            { "x": 24.0289606, "y": -104.645293},
+            { "x": 21.8890872, "y": -102.2919885},
+        ];
 
         socket.on('connect', function() {
             console.log('Conectado - página 1!');
         });
-
-        socket.on('message', function(message){
-
-            // console.log(message);
-
-            if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
-                (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
-                return 0;
-            }
-
-            var datos = JSON.parse(message);
-
-            var pais = '{{ pais }}'.toUpperCase();
-
-            switch(datos.canal_mensaje) {
-                case 'pademobile_log_transaccion' :
-
-                    break;
-            }
-        }) ;
 
         socket.on('disconnect', function() {
             console.log('disconnected');
             // content.html("<b>Disconnected!</b>");
         });
 
+        var map = {};
 
         $(document).ready(function() {
             var socket = io.connect();
@@ -62,68 +49,79 @@
                 console.log('Conectado - página 1!');
             });
 
-            socket.on('message', function(message){
-                var datos = JSON.parse(message);
-                console.log(datos);
-            }) ;
+            map = new Datamap({
+                    	    	element: document.getElementById('mapContainer'),
+                    	    	projection: 'mercator',
+                    	    	scope: 'world',
+                    	    	geographyConfig: {
+                	    		borderWidth: 0,
+                                hideAntarctica: true,
+                                popupOnHover: false,
+                                highlightBorderWidth: 0
+                	    	},
 
-            var transactions = [{
-                name: 'Joe 4',
-                radius: 25,
-                yeild: 400,
-                country: 'USSR',
-                fillKey: 'PDM',
-                significance: 'First fusion weapon test by the USSR (not "staged")',
-                date: '1953-08-12',
-                latitude: 80.07,
-                longitude: 98.43
-            },{
-                name: 'RDS-37',
-                radius: 40,
-                yeild: 1600,
-                country: 'USSR',
-                fillKey: 'PDM',
-                significance: 'First "staged" thermonuclear weapon test by the USSR (deployable)',
-                date: '1955-11-22',
-                latitude: 50.07,
-                longitude: 78.43
-
-            },{
-                name: 'Tsar Bomba',
-                radius: 75,
-                yeild: 50000,
-                country: 'USSR',
-                fillKey: 'PDM',
-                significance: 'Largest thermonuclear weapon ever tested—scaled down from its initial 100 Mt design by 50%',
-                date: '1961-10-31',
-                latitude: 73.482,
-                longitude: 54.5854
-            },{
-                name: 'Tsar',
-                radius: 50,
-                yeild: 50000,
-                country: 'USA',
-                fillKey: 'PDM',
-                significance: 'Largest thermonuclear weapon ever tested—scaled down from its initial 100 Mt design by 50%',
-                date: '1961-10-31',
-                latitude: 33.88,
-                longitude: -77.01
-            }
-            ];
-            //draw bubbles for transactions :)
-            map.bubbles(transactions, {
-                popupTemplate: function (geo, data) {
-                    return ['<div class="hoverinfo">' +  data.name,
-                                '<br/>Payload: ' +  data.yeild + ' kilotons',
-                                '<br/>Country: ' +  data.country + '',
-                                '<br/>Date: ' +  data.date + '',
-                        '</div>'].join('');
-                },
-                borderWidth: 0,
-                highlightBorderWidth: 0
-
-            });
+                    	    	fills: {
+                		        'PDM': 'rgba(241,90,36,0.7)',
+                        		        defaultFill: 'rgba(255,255,255,0.2)',
+                                'BLU': 'rgba(141,30,56,0.7)',
+                                    defaultFill: 'rgba(255,255,255,0.2)'
+                	    	}
+            		});
         });
+
+        socket.on('message', function(message){
+
+            // console.log(message);
+
+            if ((message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
+                return 0;
+            }
+
+            var datos = JSON.parse(message);
+
+            var pais = '{{ pais }}'.toUpperCase();
+
+            switch(datos.canal_mensaje) {
+                case 'pademobile_log_transaccion' :
+
+                    var item = latitudes[Math.floor(Math.random()*latitudes.length)];
+
+                    var radio = datos.importe;
+
+                    if (radio == null ) {
+                        radio = 3;
+                        var color = 'BLU';
+                    } else {
+                        radio = Math.floor(Math.abs(datos.importe) /10);
+                        var color = 'PDM';
+                    }
+
+                    // console.log(item.x+', '+item.y+'. Radio: '+ radio);
+
+                    var transactions = [{
+                        radius: radio,
+                        fillKey: color,
+                        latitude: item.x,
+                        longitude: item.y,
+                        descripcion: datos.descripcion,
+                        fecha: datos.fecha
+                    }];
+
+                    //draw bubbles for transactions :)
+                    map.bubbles(transactions, {
+                        popupTemplate: function (geo, data) {
+                            return ['<div class="hoverinfo">' +  data.descripcion,
+                                        '<br/>Fecha: ' +  data.fecha+
+                                '</div>'].join('');
+                        },
+                        borderWidth: 0,
+                        highlightBorderWidth: 0
+
+                    });
+
+                    break;
+            }
+        }) ;
     </script>
 </head>
 
