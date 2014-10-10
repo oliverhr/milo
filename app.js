@@ -30,6 +30,14 @@ if (environment == 'development') {
     var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
     var host_redis = 'localhost';
+
+    var llamada_divisas = {
+        host: 'www.pademobile.com',
+        port: 50,
+        path: '/ws/divisas.py/listado',
+        method: 'GET'
+    };
+
 } else {
     if (environment == 'staging') {
         var url_base = 'http://localhost:3000/';
@@ -37,6 +45,14 @@ if (environment == 'development') {
         var clientSecret = "-_eBhijCGke5k458Y--IblkU";
 
         var host_redis = 'repos.pademobile.com';
+
+        var llamada_divisas = {
+            host: 'www.pademobile.com',
+            port: 50,
+            path: '/ws/divisas.py/listado',
+            method: 'GET'
+        };
+
     } else {
         var url_base = 'http://milo.pademobile.com/';
         var clientID = '588509673621-2bu6b41dgiad3o0jkdfjj7cpvsh7j8bk.apps.googleusercontent.com';
@@ -45,6 +61,14 @@ if (environment == 'development') {
         var host_redis = 'localhost';
 
         process.env.PORT = 80;
+
+        var llamada_divisas = {
+            host: '192.168.250.162',
+            port: 81,
+            path: '/ws/divisas.py/listado',
+            method: 'GET'
+        };
+
     }
 }
 
@@ -100,7 +124,6 @@ passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 
-
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -113,7 +136,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/auth/google' }),
     function(req, res) {
         // Successful authentication, redirect home.
-        res.redirect('/');
+        res.redirect('/log');
     });
 
 app.get('/logout', function(req, res){
@@ -121,9 +144,9 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-app.get('/', ensureLoggedIn('/auth/google'), routes.index);
+// app.get('/', ensureLoggedIn('/auth/google'), routes.index);
 app.get('/pagina1',  paginas.log);
-app.get('/log/:pais?*',  paginas.log);
+app.get('/log/:pais?*', ensureLoggedIn('/auth/google'), paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa/:pais?*', paginas.mapa);
@@ -143,17 +166,18 @@ var io = require('socket.io');
 
 var divisas = {};
 
-var options = {
-    host: 'www.pademobile.com',
-    port: 50,
-    path: '/ws/divisas.py/listado',
-    method: 'GET'
-};
+
 
 if (!module.parent) {
     const socket  = io.listen(server);
 
-    https.request(options, function(res) {
+    if ((environment == 'staging') || (environment == 'development')) {
+        https.request(llamada_divisas, callback_divisas).end();
+    } else {
+        http.request(llamada_divisas, callback_divisas).end();
+    }
+
+    function callback_divisas(res) {
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             divisas = JSON.parse(chunk);
@@ -180,6 +204,6 @@ if (!module.parent) {
 
             });
         });
-    }).end();
+    }
 
 }
