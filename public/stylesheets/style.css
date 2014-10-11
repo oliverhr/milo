@@ -71,22 +71,15 @@ a {
     font-size: 14px;
     width: 100%;
     word-wrap: break-word;
-
-}
-.ofScroll tbody, .ofScroll thead{
-    display: block; 
 }
 
 .ofScroll tbody{
-    overflow-y: auto;
     overflow-x: hidden;
     height: 80%;
 }
 .ofScroll tbody td, .ofScroll thead th{
     color: #e6e6e6;
     font-weight: normal;
-    font-size: 12px;
-    width: 20%;
 }
 
 th {
@@ -101,12 +94,20 @@ td {
     text-align: center;
 }
 
+td.state_col{
+        font-size: 18px; 
+}
+
 .redSign{
     color:#e6503c;
 }
 
 .greenSign{
     color: #96cc5a;
+}
+
+.yellowSign{
+    color: #f5a623;
 }
 
 .pie {
@@ -219,24 +220,31 @@ padding: 0 10px;
 .rightWidget{
     background: #3C3D44;
     box-sizing: border-box;
-    height: 200px;
+    height: 25%;
     text-align: center;
+    display: table;
+    width: 100%;
+    border-bottom: 2px solid rgb(35,35,40);
     }
-
+.rwCell{
+vertical-align: middle;
+display: table-cell;
+    
+}
 .rightWidget h1{
     color: #e6e6e6;
     font-family: 'Roboto-Thin';
     font-size: 40px;
     font-weight: normal;
-    padding-top: 60px;
 }
 
 .rightWidget span{
     width: 100%;
     vertical-align: middle;
-    font-family: 'Roboto';
-    font-size: 20px;
+    font-family: 'Roboto-Medium';
+    font-size: 16px;
     padding-bottom: 10px;
+    opacity: 0.6;
 }
 .total_derecha {
     padding-top: 40px;
