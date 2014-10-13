@@ -92,7 +92,6 @@
                     if (radio == null ) {
                         radio = 14;
                         var color = 'BLU';
-
                     } else {
                         radio = Math.floor(Math.abs(datos.importe) /10);
                         var color = 'PDM';
