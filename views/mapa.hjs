@@ -20,7 +20,7 @@
         var socket = io.connect();
 
         var latitudes = [ { "x": 18.4583254, "y": -97.4843226},
-            { "x": 30.9871264, "y": 110.2839651},
+            { "x": 30.9871264, "y": -110.2839651},
             { "x": 29.0784761, "y": -110.9793706},
             { "x": 24.1164679, "y": -110.3032952},
             { "x": 23.2467867, "y": -106.4221208},
@@ -50,23 +50,24 @@
             });
 
             map = new Datamap({
-                    	    	element: document.getElementById('mapContainer'),
-                    	    	projection: 'mercator',
-                    	    	scope: 'world',
-                    	    	geographyConfig: {
-                	    		borderWidth: 0,
-                                hideAntarctica: true,
-                                popupOnHover: false,
-                                highlightBorderWidth: 0
-                	    	},
+            	    	element: document.getElementById('mapContainer'),
+            	    	projection: 'mercator',
+            	    	scope: 'world',
+            	    	geographyConfig: {
+        	    		borderWidth: 0,
+                        hideAntarctica: true,
+                        popupOnHover: false,
+                        highlightOnHover: false,
+                        highlightBorderWidth: 0
+        	    	},
 
-                    	    	fills: {
-                		        'PDM': 'rgba(241,90,36,0.7)',
-                        		        defaultFill: 'rgba(255,255,255,0.2)',
-                                'BLU': 'rgba(141,30,56,0.7)',
-                                    defaultFill: 'rgba(255,255,255,0.2)'
-                	    	}
-            		});
+            	    	fills: {
+        		        'PDM': 'rgba(241,90,36,0.8)',
+                		        defaultFill: 'rgba(255,255,255,0.2)',
+                        'BLU': 'rgba(141,30,56,0.7)',
+                                defaultFill: 'rgba(0,0,0,0.2)'
+        	    	}
+    		});
         });
 
         socket.on('message', function(message){
@@ -89,7 +90,7 @@
                     var radio = datos.importe;
 
                     if (radio == null ) {
-                        radio = 3;
+                        radio = 14;
                         var color = 'BLU';
                     } else {
                         radio = Math.floor(Math.abs(datos.importe) /10);
@@ -100,25 +101,16 @@
 
                     var transactions = [{
                         radius: radio,
-                        fillKey: color,
+                        borderColor: 'rgba(241,90,36,0.8)',
+                        borderWidth: 1,
                         latitude: item.x,
-                        longitude: item.y,
-                        descripcion: datos.descripcion,
-                        fecha: datos.fecha
+                        longitude: item.y
                     }];
 
-                    //draw bubbles for transactions :)
-                    map.bubbles(transactions, {
-                        popupTemplate: function (geo, data) {
-                            return ['<div class="hoverinfo">' +  data.descripcion,
-                                        '<br/>Fecha: ' +  data.fecha+
-                                '</div>'].join('');
-                        },
-                        borderWidth: 0,
-                        highlightBorderWidth: 0
-
+                    map.bubbles(transactions,{
+                        highlightOnHover: false,
+                        popupOnHover: false
                     });
-
                     break;
             }
         }) ;

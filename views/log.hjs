@@ -102,6 +102,10 @@
                             var idTran = datos.codtran;
                             var idSBST = idTran.substring(22, 33);
 
+
+                            var dateRed = datos.fecha;
+                            var miniDate = dateRed.substring(11, 20);
+
                             var fila = $('#fila_' + datos.id);
 
                             var html =
@@ -109,13 +113,15 @@
 
                             if (datos.estado == '1') {
                                 html = html + '<td class="state_col"> <span class="greenSign fa fa-check-circle"></span></td>';
+                            } else if (datos.estado == '-3') {
+                                html = html + '<td class="state_col"> <span class="redSign fa fa-times-circle"></span></td>';
                             } else if (datos.estado == '-2') {
                                 html = html + '<td class="state_col"> <span class="redSign fa fa-times-circle"></span></td>';
                             } else if (datos.estado == '-1') {
                                 html = html + '<td class="state_col"> <span class="yellowSign fa fa-exclamation-circle"></span></td>';
                             } else if (datos.estado == '0') {
                                 html = html + '<td class="state_col"> <span class="yellowSign fa fa-question-circle"></span></td>';
-                            }
+                            } 
                             else{
                                 html = html + '<td class="state_col"> <span class="yellowSign fa fa-circle"></span></td>';
                             }
@@ -123,7 +129,7 @@
 
 
                             html = html +
-                                    '<td class="date_col">' + datos.fecha + '</td>' +
+                                    '<td class="date_col">' + miniDate + '</td>' +
                                     '<td class="channel_col">' + datos.canal + '</td>' +
                                     '<td class="service_col">' + datos.nombre_accion + '</td>' +
                                     '<td class="userName_col">' + datos.usuario.alias + '</td>' +
