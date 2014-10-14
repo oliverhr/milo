@@ -13,3 +13,7 @@ exports.pagina3 = function(req, res){
 exports.mapa = function(req, res){
     res.render('mapa', { 'pais': req.params.pais });
 };
+
+exports.tMap = function(req, res){
+    res.render('tMap', {});
+};
