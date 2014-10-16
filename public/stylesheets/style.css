@@ -92,14 +92,53 @@ td {
     font-size: 12px;
     padding: 10px 10px;
     text-align: center;
+    white-space: nowrap;
 }
 
-td.state_col{
+.helperItem{
+    opacity: 0;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    background: rgba(27, 25, 29, 1);
+    padding: 10px;
+    border-radius: 6px 0 0 6px;
+    visibility: hidden;
+    z-index: 10;
+}
+.helperP:hover{
+
+}
+
+.helperP:hover > .helperItem,.helperP:hover > .except {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .2s ease-in-out .2s;
+}
+
+.except{
+    opacity: 0;
+    position: absolute;
+    left: 30px;
+    top: -10px;
+    background: rgba(27, 25, 29, 1);
+    padding: 10px;
+    border-radius: 0 6px 6px 0;
+    visibility: hidden;
+    z-index: 10;
+}
+
+.helperP{
+    position: relative;
+    padding: 5px 0;
+}
+.statusIcon{
         font-size: 18px; 
 }
 
 .redSign{
     color:#e6503c;
+    position: relative;
 }
 
 .greenSign{
