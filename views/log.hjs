@@ -23,7 +23,7 @@
     <script src="/javascripts/money.min.js"></script>
     <script src="/javascripts/accounting.min.js"></script>
 
-    <script src="/javascripts/resizableColumns.min.js"></script>
+    <script src="/javascripts/jquery.dataTables.min.js"></script>
 
 
     <script>
@@ -48,6 +48,7 @@
 
         $(document).ready(function() {
 
+            var wHeight = $(window).height() - 100;
             var socket = io.connect();
             var content = $('#filas');
 
@@ -69,10 +70,8 @@
                 var pais = '{{ pais }}'.toUpperCase();
 
                 switch(datos.canal_mensaje) {
-
-
                     case 'pademobile_log_total' :
-                        console.log(datos);
+                        // console.log(datos);
                         if (pais == '') {
                             $('#transacciones').html(datos.datos.transacciones);
                             $('#importe').html(datos.datos.importe.formatMoney(pais));
@@ -99,85 +98,76 @@
 
                         if ((pais == datos.pais) || (pais == '')) {
 
+                            var statusIcon;
+                            var destinoSub;
                             var idTran = datos.codtran;
-                            var idSBST = idTran.substring(22, 33);
+                            var idSubs = idTran.substring(22, 33);
 
-
-                            var dateRed = datos.fecha;
-                            var miniDate = dateRed.substring(11, 20);
+                            var dateOrig = datos.fecha;
+                            var dateSubs = dateOrig.substring(11, 20);
 
                             var fila = $('#fila_' + datos.id);
-
                             var html =
                                     '<tr id="fila_' + datos.id + '">';
 
-                            if (datos.estado == '1') {
-                                html = html + '<td class="state_col"> <span class="greenSign fa fa-check-circle"></span></td>';
-                            } else if (datos.estado == '-3') {
-                                html = html + '<td class="state_col"> <span class="redSign fa fa-times-circle"></span></td>';
-                            } else if (datos.estado == '-2') {
-                                html = html + '<td class="state_col"> <span class="redSign fa fa-times-circle"></span></td>';
-                            } else if (datos.estado == '-1') {
-                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-exclamation-circle"></span></td>';
-                            } else if (datos.estado == '0') {
-                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-question-circle"></span></td>';
-                            } 
-                            else{
-                                html = html + '<td class="state_col"> <span class="yellowSign fa fa-circle"></span></td>';
-                            }
+                            console.log(wHeight);
 
+                            var t = $('#tabla').DataTable({
+                                "order":            [1, "desc"],
+                                "info":             false,
+                                "paging":           false,
+                                "retrieve":         true,
+                                "searching":        false,
+                                "scrollY":          wHeight,
+                                "scrollCollapse":   true     
+                            });
 
+                            if (datos.estado == '1') 
+                                statusIcon = '<i class="greenSign fa fa-check-circle statusIcon"></i>'
+                            else if (datos.estado == '-3') 
+                                statusIcon = '<i class="redSign fa fa-times-circle statusIcon"></i>'
+                            else if (datos.estado == '-2')
+                                statusIcon = '<i class="redSign fa fa-times-circle statusIcon"></i>'
+                            else if (datos.estado == '-1')
+                                statusIcon = '<i class="yellowSign fa fa-exclamation-circle statusIcon"></i>'
+                            else if (datos.estado == '0')
+                                statusIcon = '<i class="yellowSign fa fa-question-circle statusIcon"></i>'
+                            else
+                                statusIcon = '<i class="yellowSign fa fa-check-circle statusIcon"></i>'
 
-                            html = html +
-                                    '<td class="date_col">' + miniDate + '</td>' +
-                                    '<td class="channel_col">' + datos.canal + '</td>' +
-                                    '<td class="service_col">' + datos.nombre_accion + '</td>' +
-                                    '<td class="userName_col">' + datos.usuario.alias + '</td>' +
-                                    '<td>' + datos.importe_fmt_abs + '</td>';
+                            if (datos.destino)
+                                destinoSub = '<span>' + datos.destino.alias + '</span>'
+                            else
+                                destinoSub = '<span> (None) </span>'
 
-                            if (datos.destino) {
-                                html = html + '<td>' + datos.destino.alias + '</td>';
-                            } else {
-                                html = html + '<td>' + '(None)' + '</td>';
-                            }
+                            var tranHelper;
 
-                            html = html + '<td>' + datos.concepto + '</td>' +
-                                    '<td>' + idSBST + '</td>' +
-                                    '</tr>';
+                            tranHelper = '<span class="helperP">…'+ idSubs +'&#8203;<span class="helperItem">' + datos.codtran +'</span></span>';
 
                             var reemplazar = false;
 
                             if (fila.length != 0) {
                                 reemplazar = true;
-                                $(fila).replaceWith(html);
-                            } else {
-                                $("#tabla tbody").prepend(html);
+                            } else {                                
+                            t.row.add([
+                                statusIcon,
+                                dateSubs,
+                                datos.canal,
+                                datos.nombre_accion,
+                                datos.usuario.alias,
+                                datos.importe_fmt_abs,
+                                destinoSub,
+                                datos.concepto,
+                                tranHelper
+                                ]).draw()
+                                .$();  
                             }
 
-                            $('#fila_' + datos.id).fadeOut(300).fadeIn(300);
+                            $(t).fadeOut(300).fadeIn(300);
                         }
 
                         break;
                 }
-
-                // // Change the selector if needed
-                // var $table = $('table.ofScroll'),
-                //     $bodyCells = $table.find('tbody tr:first').children(),
-                //     colWidth;
-                // // Adjust the width of thead cells when window resizes
-                // $(window).resize(function() {
-                //     // Get the tbody columns width array
-                //     colWidth = $bodyCells.map(function() {
-                //         return $(this).width();
-                //     }).get();
-
-                //     // Set the width of thead columns
-                //     $table.find('thead tr').children().each(function(i, v) {
-                //         $(v).width(colWidth[i]);
-                //     });
-                // }).resize(); // Trigger resize handler
-            $('table').resizableColumns();
-
             }) ;
 
             socket.on('disconnect', function() {

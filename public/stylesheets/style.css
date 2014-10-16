@@ -92,9 +92,35 @@ td {
     font-size: 12px;
     padding: 10px 10px;
     text-align: center;
+    white-space: nowrap;
 }
 
-td.state_col{
+.helperItem{
+    opacity: 0;
+    position: absolute;
+    right: 0px;
+    top: 20px;
+    background: rgba(27, 25, 29, 1);
+    padding: 10px;
+    border-radius: 6px 0 6px 6px;
+    visibility: hidden;
+    z-index: 10;
+}
+.helperP:hover{
+
+}
+
+.helperP:hover > .helperItem {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .2s ease-in-out .2s;
+}
+
+.helperP{
+    position: relative;
+    padding: 5px 0;
+}
+.statusIcon{
         font-size: 18px; 
 }
 
