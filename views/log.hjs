@@ -125,9 +125,9 @@
                             if (datos.estado == '1') 
                                 statusIcon = '<i class="greenSign fa fa-check-circle statusIcon"></i>'
                             else if (datos.estado == '-3') 
-                                statusIcon = '<i class="redSign fa fa-times-circle statusIcon"></i>'
+                                statusIcon = '<span class="helperP"><i class="redSign fa fa-times-circle statusIcon"></i><span class="except">' + datos.excepcion +'</span></span>'
                             else if (datos.estado == '-2')
-                                statusIcon = '<i class="redSign fa fa-times-circle statusIcon"></i>'
+                                statusIcon = '<span class="helperP"><i class="redSign fa fa-times-circle statusIcon"></i><span class="except">' + datos.excepcion +'</span></span>'
                             else if (datos.estado == '-1')
                                 statusIcon = '<i class="yellowSign fa fa-exclamation-circle statusIcon"></i>'
                             else if (datos.estado == '0')
