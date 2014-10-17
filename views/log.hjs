@@ -106,11 +106,7 @@
                             var dateOrig = datos.fecha;
                             var dateSubs = dateOrig.substring(11, 20);
 
-                            var fila = $('#fila_' + datos.id);
-                            var html =
-                                    '<tr id="fila_' + datos.id + '">';
-
-                            console.log(wHeight);
+                            var fila = $('#' + datos.codtran);
 
                             var t = $('#tabla').DataTable({
                                 "order":            [1, "desc"],
@@ -144,23 +140,33 @@
 
                             tranHelper = '<span class="helperP">…'+ idSubs +'&#8203;<span class="helperItem">' + datos.codtran +'</span></span>';
 
-                            var reemplazar = false;
-
                             if (fila.length != 0) {
-                                reemplazar = true;
-                            } else {                                
-                            t.row.add([
-                                statusIcon,
-                                dateSubs,
-                                datos.canal,
-                                datos.nombre_accion,
-                                datos.usuario.alias,
-                                datos.importe_fmt_abs,
-                                destinoSub,
-                                datos.concepto,
-                                tranHelper
-                                ]).draw()
-                                .$();  
+                                console.log('Reemplazamos la fila '+fila);
+                                t.row(fila).data([
+                                    statusIcon,
+                                    dateSubs,
+                                    datos.canal,
+                                    datos.nombre_accion,
+                                    datos.usuario.alias,
+                                    datos.importe_fmt_abs,
+                                    destinoSub,
+                                    datos.concepto,
+                                    tranHelper
+                                ]);
+                            } else {
+                                t.row.add( {
+                                        "0": statusIcon,
+                                        "1": dateSubs,
+                                        "2": datos.canal,
+                                        "3": datos.nombre_accion,
+                                        "4": datos.usuario.alias,
+                                        "5": datos.importe_fmt_abs,
+                                        "6": destinoSub,
+                                        "7": datos.concepto,
+                                        "8": tranHelper,
+                                        "DT_RowId": datos.codtran }
+                                ).draw()
+                                .$();
                             }
 
                             $(t).fadeOut(300).fadeIn(300);
