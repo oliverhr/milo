@@ -136,6 +136,9 @@ var setting = {
 };
 
 var asyncForEach = function(items, fn, time) {
+
+    console.log(items);
+
     if (!(items instanceof Array))
         return;
 
@@ -161,6 +164,8 @@ var ONE_SECOND = 1000,
     stepDate = 24 * 60 * 60 * 1000
 ;
 
+var _data, div, w, h, setting, fy = 2013;
+
 (function(vis) {
     /*var ONE_SECOND = 1000,
      stepDate = 24 * 60 * 60 * 1000
@@ -169,7 +174,7 @@ var ONE_SECOND = 1000,
     var PI_CIRCLE = Math.PI * 2;
 
     var _worker,
-        _data,
+        // _data,
         nodes,
         dateRange,
         selected,
@@ -233,6 +238,9 @@ var ONE_SECOND = 1000,
     function reCalc(d) {
         if (stop)
             return;
+
+        console.log(d.supplier.shortName + ' to ' + d.borrower.shortName + ' -> ' + d.project.name);
+        console.log(d);
 
         lCom.showMessage(d.supplier.shortName + ' to ' + d.borrower.shortName + ' -> ' + d.project.name);
 
@@ -368,13 +376,15 @@ var ONE_SECOND = 1000,
 
         appendExtLegend(shortTimeFormat(dr));
 
+        // console.log(_data);
+
         var visTurn = _data.filter(function (d) {
             return d.date >= dl && d.date < dr;
         });
 
         asyncForEach(visTurn, reCalc, ONE_SECOND / (visTurn.length > 1 ? visTurn.length : ONE_SECOND));
 
-        vis.pb.step(stepDate).label(shortTimeFormat(dr));
+        // vis.pb.step(stepDate).label(shortTimeFormat(dr));
 
         if (dl >= dateRange[1]) {
             if (typeof _worker !== "undefined") {
@@ -1469,10 +1479,10 @@ var ONE_SECOND = 1000,
                     .remove();
         };
 
-        vis.pb.show()
-            .pos(0)
-            .max(dateRange[1] - dateRange[0])
-            .label(shortTimeFormat(dateRange[0]));
+//        vis.pb.show()
+//            .pos(0)
+//            .max(dateRange[1] - dateRange[0])
+//            .label(shortTimeFormat(dateRange[0]));
 
         links = d3.map({});
         regionLinks = [];
@@ -1532,11 +1542,11 @@ var ONE_SECOND = 1000,
 })(vis || (vis = {}));
 
 (function() {
-    var w, h,
-        _data,
-        fy = 2013,
-        div
-    ;
+//    var w, h,
+//        _data,
+//        fy = 2013,
+//        div
+//    ;
 
     wbc.getByIsoId = function(id) {
         var c,
@@ -1752,6 +1762,10 @@ var ONE_SECOND = 1000,
         }
         _data.sort(sortByCSD);
 
+        console.log('ANTES DE _DATA');
+        console.log(_data);
+        console.log('DESPUÉS DE DATA');
+
         div = div || d3.select(document.body).append("div").attr("id", "c");
         w = document.body.clientWidth;
         h = document.body.clientHeight;
@@ -1770,27 +1784,27 @@ var ONE_SECOND = 1000,
 
         fsvg.selectAll("circle").remove();
 
-        circle = fsvg.selectAll("circle")
-            .data(needPaintCapital)
-            .enter()
-            .append("circle")
-            .attr("r", 1)
-            .attr("fill", "#fff")
-            .attr("transform", ctr);
+//        circle = fsvg.selectAll("circle")
+//            .data(needPaintCapital)
+//            .enter()
+//            .append("circle")
+//            .attr("r", 1)
+//            .attr("fill", "#fff")
+//            .attr("transform", ctr);
 
-        vis.pb = vis.pb || (
-            d3.select(document.body)
-                .append("div")
-                .attr("id", "pb")
-                .style("height", "18px")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", 18)
-                .append("g")
-                .call(d3.helper.progressbar)
-        );
-
-        vis.pb.width(w).height(18).textPosition("middle").max(0);
+//        vis.pb = vis.pb || (
+//            d3.select(document.body)
+//                .append("div")
+//                .attr("id", "pb")
+//                .style("height", "18px")
+//                .append("svg")
+//                .attr("width", w)
+//                .attr("height", 18)
+//                .append("g")
+//                .call(d3.helper.progressbar)
+//        );
+//
+//        vis.pb.width(w).height(18).textPosition("middle").max(0);
 
         imgPreloader.hide();
 
@@ -1921,10 +1935,78 @@ var ONE_SECOND = 1000,
         if (document.location.href.indexOf('visualizing.org') > -1)
             d3.csv("/sites/default/files/data_set/admin/sprint_major-contract-awards-2013.csv", request);
         else
-            d3.csv(fy + '.csv', request);            
+            d3.csv(fy + '.csv', request);
+
+        // request(function () { }, [{}]);
     });
 
 })();
+
+var socket = io.connect();
+
+var latitudes = [ { "x": 18.4583254, "y": -97.4843226},
+    { "x": 30.9871264, "y": -110.2839651},
+    { "x": 29.0784761, "y": -110.9793706},
+    { "x": 24.1164679, "y": -110.3032952},
+    { "x": 23.2467867, "y": -106.4221208},
+    { "x": 24.0289606, "y": -104.645293},
+    { "x": 21.8890872, "y": -102.2919885}
+];
+
+socket.on('connect', function() {
+    console.log('Conectado - página 1!');
+});
+
+socket.on('disconnect', function() {
+    console.log('disconnected');
+    // content.html("<b>Disconnected!</b>");
+});
+
+var map = {};
+
+$(document).ready(function() {
+    var socket = io.connect();
+    var content = $('#filas');
+
+    var fechaactual = null;
+
+    socket.on('connect', function() {
+        console.log('Conectado - página 1!');
+    });
+
+});
+
+socket.on('message', function(message){
+    // console.log(message);
+
+    if ((message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
+        return 0;
+    }
+
+    var datos = JSON.parse(message);
+
+    var pais = '{{ pais }}'.toUpperCase();
+
+    switch(datos.canal_mensaje) {
+        case 'pademobile_log_transaccion' :
+            _data = [ {
+                "As of Date": "12/18/2012 12:00:00 AM",
+                "Borrower Contract Reference Number": "NO. 19/EDYTRA",
+                "Borrower Country": "El Salvador",
+                "Borrower Country Code": "SV",
+                "Contract Description": "Instructora de piano",
+                "Contract Signing Date": "07/02/2012 12:00:00 AM",
+                "Fiscal Year": "2013",
+                "Major Sector": "Education",
+                "Procurement Category": "Consultant Services",
+                "Procurement Method": "Individual"
+//                "Procurement Type": "Education Services"Product line: "Recipient Executed Activities"Project ID: "P116646"Project Name: "SV-Addressing youth violence"Region: "LATIN AMERICA AND CARIBBEAN"Supplier: "AUDREY BEATRIZ RIVERA"Supplier Country: "El Salvador"Supplier Country Code: "SV"Total Contract Amount (USD): "$8657.00"WB Contract Number: "1324872"asdate: 1355817600000basevalue: 8657borrower: Objectcontract: Objectdate: 1341126000000id: "1324872P116646SVSV"nodes: Array[1]parent: ObjectparentNode: Objectprocurement: Objectproduct: "Recipient Executed Activities"project: Objectsector: "Education"size: 4.103976145979235supplier: Objectvalue: 8657valueOf: function value() {year: "2013"
+            } ];
+
+            // Esto llamará a reCalc(d);
+            vis.runShow(_data, div, w, h, setting);
+    }
+}) ;
 
 </script>
 

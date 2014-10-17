@@ -16,6 +16,12 @@
     <script src="/javascripts/topojson.v1.min.js"></script>
     <script src="/javascripts/datamaps.world.min.js"></script>
 
+    <script charset="utf-8" src="https://rawgithub.com/artzub/dbsv/master/progressbar.js"></script>
+    <script charset="utf-8" src="https://rawgithub.com/artzub/dbsv/master/tooltip.js"></script>
+    <script charset="utf-8" src="https://rawgithub.com/artzub/wbgds/smy/wbc.js"></script>
+
+    <script src="/javascripts/gestor_mapa.js"></script>
+
     <script>
         var socket = io.connect();
 
@@ -25,7 +31,7 @@
             { "x": 24.1164679, "y": -110.3032952},
             { "x": 23.2467867, "y": -106.4221208},
             { "x": 24.0289606, "y": -104.645293},
-            { "x": 21.8890872, "y": -102.2919885},
+            { "x": 21.8890872, "y": -102.2919885}
         ];
 
         socket.on('connect', function() {
@@ -49,25 +55,27 @@
                 console.log('Conectado - página 1!');
             });
 
-            map = new Datamap({
-            	    	element: document.getElementById('mapContainer'),
-            	    	projection: 'mercator',
-            	    	scope: 'world',
-            	    	geographyConfig: {
-        	    		borderWidth: 0,
-                        hideAntarctica: true,
-                        popupOnHover: false,
-                        highlightOnHover: false,
-                        highlightBorderWidth: 0
-        	    	},
+            request();
 
-            	    	fills: {
-        		        'PDM': 'rgba(241,90,36,0.8)',
-                		        defaultFill: 'rgba(255,255,255,0.2)',
-                        'BLU': 'rgba(141,30,56,0.7)',
-                                defaultFill: 'rgba(0,0,0,0.2)'
-        	    	}
-    		});
+//            map = new Datamap({
+//            	    	element: document.getElementById('mapContainer'),
+//            	    	projection: 'mercator',
+//            	    	scope: 'world',
+//            	    	geographyConfig: {
+//        	    		borderWidth: 0,
+//                        hideAntarctica: true,
+//                        popupOnHover: false,
+//                        highlightOnHover: false,
+//                        highlightBorderWidth: 0
+//        	    	},
+//
+//            	    	fills: {
+//        		        'PDM': 'rgba(241,90,36,0.8)',
+//                		        defaultFill: 'rgba(255,255,255,0.2)',
+//                        'BLU': 'rgba(141,30,56,0.7)',
+//                                defaultFill: 'rgba(0,0,0,0.2)'
+//        	    	}
+//    		});
         });
 
         socket.on('message', function(message){

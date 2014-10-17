@@ -126,8 +126,6 @@
                                 html = html + '<td class="state_col"> <span class="yellowSign fa fa-circle"></span></td>';
                             }
 
-
-
                             html = html +
                                     '<td class="date_col">' + miniDate + '</td>' +
                                     '<td class="channel_col">' + datos.canal + '</td>' +
