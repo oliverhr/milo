@@ -72,7 +72,7 @@
 
         socket.on('message', function(message){
 
-            // console.log(message);
+            console.log(message);
 
             if ((message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
                 return 0;

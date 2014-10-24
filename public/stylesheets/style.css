@@ -255,16 +255,27 @@ padding: 0 10px;
 
 .total_izquierda {
     height: 100%;
+    position: relative;
+    z-index: 10;
 }
 .rightWidget{
     background: #3C3D44;
     box-sizing: border-box;
-    height: 25%;
+    height: 22%;
     text-align: center;
     display: table;
     width: 100%;
     border-bottom: 2px solid rgb(35,35,40);
     }
+.logosWidget{
+    background: #28282C;
+    box-sizing: border-box;
+    height: 12%;
+    text-align: center;
+    display: table;
+    width: 100%;   
+}
+
 .rwCell{
 vertical-align: middle;
 display: table-cell;
@@ -283,7 +294,7 @@ display: table-cell;
     font-family: 'Roboto-Medium';
     font-size: 16px;
     padding-bottom: 10px;
-    opacity: 0.6;
+    opacity: 0.3;
 }
 .total_derecha {
     padding-top: 40px;
@@ -295,12 +306,12 @@ display: table-cell;
     height: 100%;
     position: relative;
  }
-
+/*
 path {
     stroke: white;
     stroke-width: 0.25px;
     fill: grey;
-}
+}*/
 
 .container_grafico {
     text-align: center;
@@ -329,4 +340,33 @@ path {
 .grafico {
     width: 90%;
     height: 300px;
+}
+
+.iconsRow{
+    position: absolute;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    background: rgb(35,35,40);
+    z-index: 0;
+}
+.miloLogo{
+    width: 130px;
+    padding: 10px 0 0px;
+    display: inline-block;
+}
+
+.poweredSvg{
+    width: 130px;
+    position: relative;
+    display: inline-block;
+    padding: 0px 0px 13px 10px;
+}
+
+.poweredSvg path, .miloLogo path{
+    fill: rgba(255,255,255,0.2);
+}
+
+.poweredSvg:hover path, .miloLogo:hover path{
+    fill: rgba(255,255,255,0.6);
 }
