@@ -135,7 +135,7 @@
             var w = $('.datamap').width();
             var h = $('.datamap').height();
 
-            //console.log(datos);
+            console.log(datos);
 
             var svg = d3.select(".datamap")
                     .append("svg")
