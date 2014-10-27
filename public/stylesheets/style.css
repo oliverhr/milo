@@ -245,14 +245,6 @@ display: inline-block;
 padding: 0 10px;
 }
 
-.poweredby{
-    width: 140px;
-    position: absolute;
-    bottom: 5%;
-    margin-bottom: -15px;
-    right: 20px;
-}
-
 .total_izquierda {
     height: 100%;
     position: relative;
@@ -279,6 +271,7 @@ padding: 0 10px;
 .rwCell{
 vertical-align: middle;
 display: table-cell;
+position: relative;
     
 }
 .rightWidget h1{
@@ -350,23 +343,41 @@ path {
     background: rgb(35,35,40);
     z-index: 0;
 }
-.miloLogo{
-    width: 130px;
-    padding: 10px 0 0px;
+.rwCell .miloLogo{
+    width: 110px;
     display: inline-block;
+    position: absolute;
+    left: 30px;
+    top: 19px;
 }
 
-.poweredSvg{
-    width: 130px;
-    position: relative;
-    display: inline-block;
-    padding: 0px 0px 13px 10px;
+.miloLogo-map, .poweredSvg-map{
+width: 140px;
+position: absolute;
+margin-bottom: -15px;
 }
 
-.poweredSvg path, .miloLogo path{
+.miloLogo-map{left: 20px;
+bottom: 20px;
+} 
+.poweredSvg-map{right: 20px;
+bottom: 5%;
+}
+
+.rwCell .poweredSvg{
+    width: 130px;
+    position: absolute;
+    display: inline-block;
+    top: 35px;
+    left: 170px;
+}
+
+.poweredSvg path, .miloLogo path,
+.poweredSvg-map path, .miloLogo-map path{
     fill: rgba(255,255,255,0.2);
 }
 
-.poweredSvg:hover path, .miloLogo:hover path{
+.poweredSvg:hover path, .miloLogo:hover path,
+.poweredSvg-map:hover path, .miloLogo-map:hover path{
     fill: rgba(255,255,255,0.6);
 }
