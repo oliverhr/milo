@@ -20,8 +20,6 @@
     <script charset="utf-8" src="https://rawgithub.com/artzub/dbsv/master/tooltip.js"></script>
     <script charset="utf-8" src="https://rawgithub.com/artzub/wbgds/smy/wbc.js"></script>
 
-    <script src="/javascripts/gestor_mapa.js"></script>
-
     <script>
         var socket = io.connect();
 
@@ -55,28 +53,150 @@
                 console.log('Conectado - página 1!');
             });
 
-            request();
+            map = new Datamap({
+            	    	element: document.getElementById('mapContainer'),
+            	    	projection: 'mercator',
+            	    	scope: 'world',
+            	    	geographyConfig: {
+        	    		borderWidth: 0,
+                        hideAntarctica: true,
+                        popupOnHover: false,
+                        highlightOnHover: false,
+                        highlightBorderWidth: 0
+        	    	},
 
-//            map = new Datamap({
-//            	    	element: document.getElementById('mapContainer'),
-//            	    	projection: 'mercator',
-//            	    	scope: 'world',
-//            	    	geographyConfig: {
-//        	    		borderWidth: 0,
-//                        hideAntarctica: true,
-//                        popupOnHover: false,
-//                        highlightOnHover: false,
-//                        highlightBorderWidth: 0
-//        	    	},
-//
-//            	    	fills: {
-//        		        'PDM': 'rgba(241,90,36,0.8)',
-//                		        defaultFill: 'rgba(255,255,255,0.2)',
-//                        'BLU': 'rgba(141,30,56,0.7)',
-//                                defaultFill: 'rgba(0,0,0,0.2)'
-//        	    	}
-//    		});
+            	    	fills: {
+        		        'PDM': 'rgba(241,90,36,0.8)',
+                		        defaultFill: 'rgba(255,255,255,0.2)',
+                        'BLU': 'rgba(141,30,56,0.7)',
+                                defaultFill: 'rgba(0,0,0,0.2)'
+        	    	}
+    		});
+
+//            console.log('Hola!');
+//            bubbles(dataEntrada);
+//            console.log('Adios!');
+
         });
+
+        //Aquí pasa la magia
+
+        //Datos de prueba
+        var dataEntrada = [{
+            amount: 90,
+            x: 120,
+            y: 140,
+            country: "MX"
+        }, {
+            amount: 200,
+            x: 320,
+            y: 90,
+            country: "MX"
+        }, {
+            amount: 340,
+            x: 20,
+            y: 300,
+            country: "MX"
+        }, {
+            amount: 600,
+            x: 300,
+            y: 30,
+            country: "MX"
+        }, {
+            amount: 140,
+            x: 220,
+            y: 40,
+            country: "MX"
+        }, {
+            amount: 100,
+            x: 10,
+            y: 200,
+            country: "MX"
+        }, {
+            amount: 400,
+            x: 40,
+            y: 300,
+            country: "MX"
+        }, {
+            amount: 140,
+            x: 50,
+            y: 400,
+            country: "MX"
+        }, {
+            amount: 500,
+            x: 300,
+            y: 10,
+            country: "MX"
+        }];
+
+        function bubbles(datos) {
+
+            //Tamaño del contenedor TODO hacerlo del tamaño del mapa
+            var w = $('.datamap').width();
+            var h = $('.datamap').height();
+
+            console.log(datos);
+
+            var svg = d3.select(".datamap")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+            var bubble = svg.selectAll("g")
+                    .data(datos);
+
+            var gBubble = bubble.enter()
+                    .append("g")
+                    .attr("transform", function (d) {
+                        return "translate(" + d.x + "," + d.y + ")"
+                    });
+
+            var pulse = gBubble.append("circle")
+                    .attr("r", 0)
+                    .attr("fill", "rgba(235,113,60,0.6")
+                    .attr("stroke", "rgba(235,113,60,0.9)")
+                    .attr("stroke-width", 0)
+                    .attr("stroke-dasharray", "1,0");
+            var mini = gBubble.append("circle")
+                    .attr("r", 4)
+                    .attr("fill", "rgba(235,113,60,0");
+            mini.transition()
+                    .duration(1000)
+                    .delay(function (d, i) {
+                        return i * 200;
+                    })
+                    .attr("fill", "rgba(235,113,60,0.8")
+                    .each("end", function () {
+                        d3.select(this)
+                    })
+                    .remove();
+
+            pulse.transition()
+                    .duration(1600)
+                    .delay(function (d, i) {
+                        return i * 200;
+                    })
+                    .ease("bounce")
+                    .each("start", function () {
+                        d3.select(this)
+                                .attr("fill", "rgba(235,113,60,0.2")
+                                .attr("opacity", 1);
+                    })
+                    .attr("r", 6)
+                    .each("end", function () {
+                        d3.select(this)
+
+                    })
+                    .attr("stroke-width", 2)
+                    .attr("stroke", "rgba(235,113,60,0.4)")
+                    .attr("stroke-dasharray", "2,2")
+                    .attr("fill", "rgba(235,113,60,0")
+                    .attr("r", function (d) {
+                        return d.amount / 5;
+                    })
+                    .attr("opacity", 0.4)
+                    .remove();
+        }
 
         socket.on('message', function(message){
 
@@ -98,28 +218,41 @@
                     var radio = datos.importe;
 
                     if (radio == null ) {
-                        radio = 14;
+                        radio = 50;
                         var color = 'BLU';
                     } else {
-                        radio = Math.floor(Math.abs(datos.importe) /10);
+                        radio = Math.abs(datos.importe);
                         var color = 'PDM';
                     }
 
-                    // console.log(item.x+', '+item.y+'. Radio: '+ radio);
+                    var posicion = map.latLngToXY(item.x, item.y);
 
-                    var transactions = [{
-                        radius: radio,
-                        borderColor: 'rgba(241,90,36,0.8)',
-                        borderWidth: 1,
-                        latitude: item.x,
-                        longitude: item.y
-                    }];
+                    // console.log(posicion);
 
-                    map.bubbles(transactions,{
-                        highlightOnHover: false,
-                        popupOnHover: false
-                    });
-                    break;
+                    // console.log(radio);
+
+                    var datos = [ {
+                        amount: radio,
+                        x: posicion[0],
+                        y: posicion[1]
+                        //country: "MX"
+                     }];
+
+                    bubbles(datos);
+
+//                    var transactions = [{
+//                        radius: radio,
+//                        borderColor: 'rgba(241,90,36,0.8)',
+//                        borderWidth: 1,
+//                        latitude: item.x,
+//                        longitude: item.y
+//                    }];
+//
+//                    map.bubbles(transactions,{
+//                        highlightOnHover: false,
+//                        popupOnHover: false
+//                    });
+//                    break;
             }
         }) ;
     </script>
