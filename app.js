@@ -150,6 +150,7 @@ app.get('/log/:pais?*', ensureLoggedIn('/auth/google'), paginas.log);
 app.get('/pagina2', paginas.pagina2);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa/:pais?*', paginas.mapa);
+app.get('/tmap', paginas.tMap);
 
 server = http.createServer(app);
 
