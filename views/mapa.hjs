@@ -158,10 +158,10 @@
                     .attr("stroke-width", 0)
                     .attr("stroke-dasharray", "1,0");
             var mini = gBubble.append("circle")
-                    .attr("r", 4)
+                    .attr("r", 2)
                     .attr("fill", "rgba(235,113,60,0");
             mini.transition()
-                    .duration(1000)
+                    .duration(4000)
                     .delay(function (d, i) {
                         return i * 200;
                     })
@@ -172,7 +172,7 @@
                     .remove();
 
             pulse.transition()
-                    .duration(1600)
+                    .duration(4600)
                     .delay(function (d, i) {
                         return i * 200;
                     })
@@ -187,12 +187,12 @@
                         d3.select(this)
 
                     })
-                    .attr("stroke-width", 2)
+                    .attr("stroke-width", 1)
                     .attr("stroke", "rgba(235,113,60,0.4)")
                     .attr("stroke-dasharray", "2,2")
                     .attr("fill", "rgba(235,113,60,0")
                     .attr("r", function (d) {
-                        return d.amount / 5;
+                        return d.amount / 2;
                     })
                     .attr("opacity", 0.4)
                     .remove();

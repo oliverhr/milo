@@ -351,11 +351,20 @@ path {
     top: 19px;
 }
 
-.miloLogo-map, .poweredSvg-map{
+.poweredSvg-map{
 width: 140px;
 position: absolute;
 margin-bottom: -15px;
+
 }
+
+.miloLogo-map{
+width: 110px;
+position: absolute;
+margin-bottom: -15px;
+
+}
+
 
 .miloLogo-map{left: 20px;
 bottom: 20px;
