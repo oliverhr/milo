@@ -15,6 +15,7 @@ var passport = require('passport')
     , ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 var acumulador = require('./acumulador.js');
 var transacciones_pademobile = require('./acumuladores/transacciones_pademobile.js');
+var timetrack_teamwork = require('./acumuladores/timetrack-teamwork.js');
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in passport require a `validate` function, which accept
@@ -147,7 +148,7 @@ app.get('/logout', function(req, res){
 // app.get('/', ensureLoggedIn('/auth/google'), routes.index);
 app.get('/pagina1',  paginas.log);
 app.get('/log/:pais?*', ensureLoggedIn('/auth/google'), paginas.log);
-app.get('/pagina2', paginas.pagina2);
+app.get('/timetrack/:id_ususario?*', paginas.timetrack);
 app.get('/pagina3', paginas.pagina3);
 app.get('/mapa/:pais?*', paginas.mapa);
 app.get('/tmap', paginas.tMap);
@@ -201,8 +202,9 @@ if (!module.parent) {
                 console.log('Suscribiéndonos');
 
                 var ac = new acumulador.AcumuladorMilo('transacciones-pademobile', redis_cli, subscribe, socket, client, divisas);
+                var ac = new acumulador.AcumuladorMilo('timetrack-teamwork', redis_cli, subscribe, socket, client, divisas);
                 ac.inicializar(transacciones_pademobile.procesar);
-
+                ac.inicializar(timetrack_teamwork.procesar);
             });
         });
     }
