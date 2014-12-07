@@ -186,7 +186,7 @@ if (!module.parent) {
         });
 
         res.on('end', function () {
-            divisas = JSON.parse(chunk);
+            divisas = JSON.parse(texto);
 
             divisas = divisas.divisas;
 
