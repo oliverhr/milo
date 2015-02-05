@@ -182,65 +182,27 @@ td {
 .mapView{
     position: relative; 
     width: 80%; 
-    height: 80%;
+    height: 100%;
     margin: 0 auto;
 }
 
 /* @group Marquee */
 
-.marquee div {
-    display: block;
-    width: 200%;        
-    position: absolute;
-    overflow: hidden;
-    
-    -webkit-animation: marquee 20s linear infinite;
-    -moz-animation: marquee 20s linear infinite;
-    -ms-animation: marquee 20s linear infinite;
-    -o-animation: marquee 20s linear infinite;
-    animation: marquee 20s linear infinite;
-}
-.marquee section {
-    float: left;
-    width: 50%;
-}
-    
-@-webkit-keyframes marquee {
-    0% { left: 0; }
-    100% { left: -100%; }
-}
-@-moz-keyframes marquee {
-    0% { left: 0; }
-    100% { left: -100%; }
-}
-@-ms-keyframes marquee {
-    0% { left: 0; }
-    100% { left: -100%; }
-}
-@-o-keyframes marquee {
-    0% { left: 0; }
-    100% { left: -100%; }
-}
-@keyframes marquee {
-    0% { left: 0; }
-    100% { left: -100%; }
-}
-
 /* @end */
 
 
 span.barTitle {
-color: #fbb03b;
+color: rgba(251, 154, 59, 0.6);
 font-family: 'Roboto-Medium';
-font-size: 14px;
-padding: 15px 20px 10px 40px;
+font-size: 18px;
+padding: 13px 20px 10px 40px;
 display: inline-block;
 text-transform: uppercase;
 }
 span.barElement {
-color: rgba(250,250,250,0.8);
-font-family: 'Roboto-Medium';
-font-size: 14px;
+color: rgba(255, 255, 255, 0.83);
+font-family: 'Roboto-Regular';
+font-size: 16px;
 display: inline-block;
 padding: 0 10px;
 }
@@ -355,7 +317,6 @@ path {
 width: 140px;
 position: absolute;
 margin-bottom: -15px;
-
 }
 
 .miloLogo-map{
@@ -365,11 +326,12 @@ margin-bottom: -15px;
 
 }
 
-
-.miloLogo-map{left: 20px;
+.miloLogo-map{
+    left: 20px;
 bottom: 20px;
 } 
-.poweredSvg-map{right: 20px;
+.poweredSvg-map{
+    right: 20px;
 bottom: 5%;
 }
 

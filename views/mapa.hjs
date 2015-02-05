@@ -15,6 +15,8 @@
     <script src="/javascripts/d3.v3.min.js"></script>
     <script src="/javascripts/topojson.v1.min.js"></script>
     <script src="/javascripts/datamaps.world.min.js"></script>
+    <script src="/javascripts/jquery.marquee.min.js"></script>
+
 
     <script charset="utf-8" src="https://rawgithub.com/artzub/dbsv/master/progressbar.js"></script>
     <script charset="utf-8" src="https://rawgithub.com/artzub/dbsv/master/tooltip.js"></script>
@@ -46,6 +48,12 @@
         $(document).ready(function() {
             var socket = io.connect();
             var content = $('#filas');
+
+            $('.marquee').marquee({
+                    duplicated: true,
+                    duration: 50000
+            });
+
 
             var fechaactual = null;
 
@@ -79,56 +87,6 @@
 
         });
 
-        //Aquí pasa la magia
-
-        //Datos de prueba
-        var dataEntrada = [{
-            amount: 90,
-            x: 120,
-            y: 140,
-            country: "MX"
-        }, {
-            amount: 200,
-            x: 320,
-            y: 90,
-            country: "MX"
-        }, {
-            amount: 340,
-            x: 20,
-            y: 300,
-            country: "MX"
-        }, {
-            amount: 600,
-            x: 300,
-            y: 30,
-            country: "MX"
-        }, {
-            amount: 140,
-            x: 220,
-            y: 40,
-            country: "MX"
-        }, {
-            amount: 100,
-            x: 10,
-            y: 200,
-            country: "MX"
-        }, {
-            amount: 400,
-            x: 40,
-            y: 300,
-            country: "MX"
-        }, {
-            amount: 140,
-            x: 50,
-            y: 400,
-            country: "MX"
-        }, {
-            amount: 500,
-            x: 300,
-            y: 10,
-            country: "MX"
-        }];
-
         function bubbles(datos) {
 
             //Tamaño del contenedor TODO hacerlo del tamaño del mapa
@@ -136,6 +94,16 @@
             var h = $('.datamap').height();
 
             console.log(datos);
+
+            var radio = datos.importe;
+
+            if (radio == null ) {
+                radio = 50;
+                var color = 'BLU';
+            } else {
+                radio = Math.abs(datos.importe);
+                var color = 'PDM';
+            }
 
             var svg = d3.select(".datamap")
                     .append("svg")
@@ -153,19 +121,19 @@
 
             var pulse = gBubble.append("circle")
                     .attr("r", 0)
-                    .attr("fill", "rgba(235,113,60,0.6")
-                    .attr("stroke", "rgba(235,113,60,0.9)")
+                    .attr("fill", color)
+                    .attr("stroke", color)
                     .attr("stroke-width", 0)
                     .attr("stroke-dasharray", "1,0");
             var mini = gBubble.append("circle")
                     .attr("r", 2)
-                    .attr("fill", "rgba(235,113,60,0");
+                    .attr("fill", color);
             mini.transition()
                     .duration(4000)
                     .delay(function (d, i) {
                         return i * 200;
                     })
-                    .attr("fill", "rgba(235,113,60,0.8")
+                    .attr("fill", color)
                     .each("end", function () {
                         d3.select(this)
                     })
@@ -211,6 +179,29 @@
             var pais = '{{ pais }}'.toUpperCase();
 
             switch(datos.canal_mensaje) {
+                case 'pademobile_log_total' :
+                    // console.log(datos);
+                    if (pais == '') {
+                        $('#transacciones').html(datos.datos.transacciones);
+                        $('#importe').html(datos.datos.importe.formatMoney(pais));
+                        $('#comisiones').html(datos.datos.comisiones.formatMoney(pais));
+                        $('#transacciones_completadas').html(datos.datos.transacciones_conimporte);
+                    } else {
+                        if (datos.datos[pais] == null) {
+                            var cero = 0;
+                            $('#transacciones').html(cero);
+                            $('#importe').html(cero.formatMoney(pais));
+                            $('#comisiones').html(cero.formatMoney(pais));
+                            $('#transacciones_completadas').html(cero);
+                        } else {
+                            $('#transacciones').html(datos.datos[pais].transacciones);
+                            $('#importe').html(datos.datos[pais].importe.formatMoney(pais));
+                            $('#comisiones').html(datos.datos[pais].comisiones.formatMoney(pais));
+                            $('#transacciones_completadas').html(datos.datos[pais].transacciones_conimporte);
+                        }
+                    }
+                break;
+
                 case 'pademobile_log_transaccion' :
 
                     var item = latitudes[Math.floor(Math.random()*latitudes.length)];
@@ -262,46 +253,16 @@
     <div id="mapContainer" class="mapView"></div>
 
     <div class="bottomLine marquee">
-        <div>
-        <section>
+
             <span class="barTitle">Transactions</span>
-            <span class="barElement">MEX 12,181 <span class="greenSign fa fa-arrow-up"></span></span>
-            <span class="barElement">ESP 1,238 <span class="redSign fa fa-arrow-down"></span></span>
-            <span class="barElement">USA 902 <span class="greenSign fa fa-arrow-up"></span></span>
-            <span class="barElement">ITA 902 <span class="greenSign fa fa-arrow-up"></span></span>
+            <span class="barElement" id="importe"> 0 </span>
 
-            <span class="barTitle">Top Users MEX</span>
-            <span class="barElement">dgsalas</span>
-            <span class="barElement">diego_</span>
-            <span class="barElement">4492019221</span>
+            <span class="barTitle">MANAGED AMOUNT</span>
+            <span class="barElement" id="transacciones"> 0 </span>
 
-            <span class="barTitle">Top Users USA</span>
-            <span class="barElement">1331292828</span>
-            <span class="barElement">1291822384</span>
-            <span class="barElement">1492019221</span>
+            <span class="barTitle">Average Amount</span>
+            <span class="barElement"id="comisiones"> 0 </span>
 
-        </section>
-
-        <section>
-            <span class="barTitle">Transactions</span>
-            <span class="barElement">MEX 12,181 <span class="greenSign fa fa-arrow-up"></span></span>
-            <span class="barElement">ESP 1,238 <span class="redSign fa fa-arrow-down"></span></span>
-            <span class="barElement">USA 902 <span class="greenSign fa fa-arrow-up"></span></span>
-            <span class="barElement">ITA 902 <span class="greenSign fa fa-arrow-up"></span></span>
-
-            <span class="barTitle">Top Users MEX</span>
-            <span class="barElement">dgsalas</span>
-            <span class="barElement">diego_</span>
-            <span class="barElement">4492019221</span>
-
-            <span class="barTitle">Top Users USA</span>
-            <span class="barElement">1331292828</span>
-            <span class="barElement">1291822384</span>
-            <span class="barElement">1492019221</span>
-
-        </section>
-
-        </div>
     </div>
       <svg class="miloLogo-map" aria-labeledby="miloLogo milLogoDesc" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560">
       <title id="miloLogo">Milo</title>
