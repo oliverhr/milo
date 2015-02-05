@@ -180,8 +180,13 @@ if (!module.parent) {
 
     function callback_divisas(res) {
         res.setEncoding('utf8');
+        var texto = '';
         res.on('data', function (chunk) {
-            divisas = JSON.parse(chunk);
+            texto = texto + chunk;
+        });
+
+        res.on('end', function () {
+            divisas = JSON.parse(texto);
 
             divisas = divisas.divisas;
 
