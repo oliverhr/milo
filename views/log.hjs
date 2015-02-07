@@ -16,8 +16,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
 
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="/javascripts/d3.min.js"></script>
+    <script src="/javascripts/topojson.v1.min.js"></script>
 
     <script src="/javascripts/moment.min.js"></script>
     <script src="/javascripts/money.min.js"></script>
@@ -57,7 +57,7 @@
             });
 
             socket.on('message', function(message){
-
+                $('.overMessage').fadeOut();
                 console.log(message);
 
                 if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
@@ -163,12 +163,16 @@
 </head>
 <body>
   <div class="row tableLog">
-    <div id="wrapper" class="column">
+    <div class="overMessage">
+    <img class="loader" src="/images/ball-triangle.svg">
+        <p>Waiting for new transactions</p>
+    </div>
+    <div id="wrapper" class="large-10 column small-centered">
       <div id="filas">
           <table id="tabla" class="ofScroll">
               <thead>
               <tr>
-                  <th class="state_col">State</th>
+                  <th class="state_col">Status</th>
                   <th class="date_col">Time</th>
                   <th class="channel_col">Channel</th>
                   <th class="service_col">Service</th>
