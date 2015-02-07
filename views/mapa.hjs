@@ -241,6 +241,8 @@ console.log(datos);
                         var color = 'rgba(241,90,36,0.8)';
                     }
 
+                    if (radio == null) radio = 50;
+
                     var datos_bubble = [ {
                         amount: radio,
                         x: posicion[0],
