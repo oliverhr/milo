@@ -191,57 +191,89 @@
                     })
                     .attr("opacity", 0.4)
                     .remove();      
-
         }
 
         function pathD(datos){
 
-        var h, svg, w;
+
+        var h, svg, w, targetPath, map, projection, path;
+
+        map = d3.select(".datamap");
 
         w = $('.datamap').width();
         h = $('.datamap').height();
 
-        svg = d3.select(".datamap")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h);
-
-        var projection = d3.geo
+        projection = d3.geo
                    .mercator()
                    .scale(150)
                    .translate([w / 2, h / 2]);
 
-        var path = d3.geo
+        path = d3.geo
              .path()
              .pointRadius(2)
              .projection(projection);
 
-        // var route = svg.append("path")
-        //        .datum({type: "LineString", coordinates: [datos.origin, datos.destination]})
-        //        .attr("class", "route")
-        //        .attr("d", path);
+        svg = map.append("svg:g")
+            .attr("width", w)
+            .attr("height", h)
+            .attr("class", "test");
+ 
+        pathinfo = [datos.origin,datos.destination];
+
+        pDraw = d3.svg.line()
+                        .x(function(d){return d.x;})
+                        .y(function(d){return d.y;})
+                        .interpolate("cardinal"); 
+
+        svg.append("svg:path")
+            .attr("d", pDraw(pathinfo))
+            .style("stroke-width", 2)
+            .style("stroke", "rgba(255,255,255,0.1")
+            .style("fill", "none");
+                    
+    targetPath = d3.selectAll('.test')[0][0];
+    console.log(targetPath)
+    
+    var pathNode = d3.select(targetPath).selectAll('path').node();
+    var pathLength = pathNode.getTotalLength();
+    
+    circle = svg.append("circle")
+        .attr({
+        r: 4,
+        fill: 'rgba(130,40,30,0.6)',
+        transform: function () {
+            var p = pathNode.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    svg.transition()  
+        .duration(3400)
+        .delay(function (d, i) {
+            return i * 500;
+        })
+        .attr("opacity", 0.4)
         
-        var graticule = d3.geo.graticule();
+        .each("end", function () {
+            d3.select(this)
+        })       ;
 
-        svg = d3.select(".datamap")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h);
 
-        var g = svg.append("g");
-
-        var places = {
-            GSFC: [-76.852587, 38.991621],
-            KSC: [-80.650813, 28.524963]
-            };
-
-        var route = {
-          type: "LineString",
-          coordinates: [
-            places.GSFC,
-            places.KSC
-          ]
-        };        
+    circle.transition()
+        .duration(3400)
+        .delay(function (d, i) {
+            return i * 200;
+        })
+        .ease("ease-out")
+        .attrTween("transform", function (d, i) {
+            return function (t) {
+                var p = pathNode.getPointAtLength(pathLength*t);
+                return "translate(" + [p.x, p.y] + ")";
+            }
+        })
+        .each("end", function () {
+            d3.select(this)
+        })       ;
 
         }
     
@@ -307,15 +339,14 @@
                         x: posicion[0],
                         y: posicion[1],
                         col: color
-                        //country: "MX"
                      }];
 
-                    var datos_envio = [ {
+                    var datos_envio = {
                         amount: radio,
-                        origin: posicion,
-                        destination:receptor,                       
+                        origin: { x:receptor[0],y:receptor[1]},
+                        destination:{ x:posicion[0],y:posicion[1]},                       
                         col: color
-                     }];
+                     };
 
                     pathD(datos_envio);
                     bubbles(datos_bubble);
