@@ -45,7 +45,13 @@
     }, {
         "x": 21.8890872,
         "y": -102.2919885
-    }, ];
+    }, 
+    {   "x": 37.3835801, 
+        "y":-122.013269
+    },
+    {   "x": 37.3812709, 
+        "y": -122.0828975
+    }];
 
     var destinos = [{
         "x": 40.4378271,
@@ -62,20 +68,13 @@
     }, {
         "x": 41.6516912,
         "y": -0.8949809
-    }, {
-        "x": 24.1164679,
-        "y": -110.3032952
-    }, {
-        "x": 23.2467867,
-        "y": -106.4221208
-    }, {
-        "x": 24.0289606,
-        "y": -104.645293
-    }, {
-        "x": 37.7577,
-        "y": -122.4376
-    }
-
+    },
+   {"x":-21.1651508, "y":27.5026845},
+{
+    "x":-22.5446721,"y":27.1175193
+},
+{ "x":-22.40475,"y":26.7228699},
+{"x":43.79279,"y":11.6267973}
     ];
 
     socket.on('connect', function() {
@@ -334,8 +333,8 @@
                 .attr("class", "test");
 
         var mid_point = {
-            x: (datos.destination.x + datos.destination.x),
-            y: ((datos.destination.y + datos.destination.y) / 2)
+            x: (datos.destination.x * 1.7),
+            y: ((datos.destination.y) / 1.3)
         }
         var pathinfo = [datos.origin, mid_point, datos.destination];
 
@@ -353,7 +352,7 @@
                 .attr("d", pDraw(pathinfo))
                 .style("stroke-width", 2)
                 .style("fill", "none")
-                .style("stroke", "rgba(241,90,36,0.2)");
+                .style("stroke", "rgba(70, 214, 154, 0.1)");
 
         var totalLength = testing.node().getTotalLength();
 
