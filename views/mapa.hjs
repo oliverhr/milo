@@ -221,60 +221,32 @@
         pathinfo = [datos.origin,datos.destination];
 
         pDraw = d3.svg.line()
-                        .x(function(d){return d.x;})
-                        .y(function(d){return d.y;})
-                        .interpolate("cardinal"); 
+            .x(function(d){return d.x;})
+            .y(function(d){return d.y;})
+            .interpolate("cardinal"); 
 
-        svg.append("svg:path")
+        var testing = svg.append("svg:path")
             .attr("d", pDraw(pathinfo))
             .style("stroke-width", 2)
-            .style("stroke", "rgba(255,255,255,0.1")
-            .style("fill", "none");
-                    
-    targetPath = d3.selectAll('.test')[0][0];
-    console.log(targetPath)
-    
-    var pathNode = d3.select(targetPath).selectAll('path').node();
-    var pathLength = pathNode.getTotalLength();
-    
-    circle = svg.append("circle")
-        .attr({
-        r: 4,
-        fill: 'rgba(130,40,30,0.6)',
-        transform: function () {
-            var p = pathNode.getPointAtLength(0)
-            return "translate(" + [p.x, p.y] + ")";
-        }
-    });
+            .style("fill", "none")
+            .style("stroke", "rgba(241,90,36,0.2)");
+           
+    var totalLength = testing.node().getTotalLength();
+
+        testing  
+            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(1200)
+            .ease("ease-out")
+            .attr("stroke-dashoffset", 0)
 
     svg.transition()  
-        .duration(3400)
-        .delay(function (d, i) {
-            return i * 500;
-        })
-        .attr("opacity", 0.4)
-        
+        .duration(2000)  
         .each("end", function () {
             d3.select(this)
-        })       ;
-
-
-    circle.transition()
-        .duration(3400)
-        .delay(function (d, i) {
-            return i * 200;
-        })
-        .ease("ease-out")
-        .attrTween("transform", function (d, i) {
-            return function (t) {
-                var p = pathNode.getPointAtLength(pathLength*t);
-                return "translate(" + [p.x, p.y] + ")";
-            }
-        })
-        .each("end", function () {
-            d3.select(this)
-        })       ;
-
+            .style("opacity",0);
+        });
         }
     
         socket.on('message', function(message){
@@ -365,6 +337,13 @@
                     <div class="icon-list">
                         <a href="/log"><i class="fa fa-table"></i><span>Transactions</span></a>
                         <a href="/mapa"><i class="fa fa-globe"></i><span>Map</span></a>
+                        <a href="/mapa"><i class="fa fa-area-chart"></i><span>Dashboard</span></a>
+                        <a href="/mapa"><i class="fa fa-database"></i>
+
+<span>Big Data Collector</span></a>
+                        <a href="/mapa"><i class="fa fa-cog"></i><span>Settings</span></a>
+
+
                     </div>
                 </nav>
                 <button class="close-button" id="close-button"><i class="fa fa-times"></i></button>
