@@ -22,180 +22,293 @@
     <script src="/javascripts/accounting.min.js"></script>
 
     <script>
+    var socket = io.connect();
+
+    var latitudes = [{
+        "x": 18.4583254,
+        "y": -97.4843226
+    }, {
+        "x": 30.9871264,
+        "y": -110.2839651
+    }, {
+        "x": 29.0784761,
+        "y": -110.9793706
+    }, {
+        "x": 24.1164679,
+        "y": -110.3032952
+    }, {
+        "x": 23.2467867,
+        "y": -106.4221208
+    }, {
+        "x": 24.0289606,
+        "y": -104.645293
+    }, {
+        "x": 21.8890872,
+        "y": -102.2919885
+    }, ];
+
+    var destinos = [{
+        "x": 40.4378271,
+        "y": -3.6795366
+    }, {
+        "x": 37.1809462,
+        "y": -3.5922032
+    }, {
+        "x": 37.891586,
+        "y": -4.7844853
+    }, {
+        "x": 36.718222,
+        "y": -4.4492669
+    }, {
+        "x": 41.6516912,
+        "y": -0.8949809
+    }, {
+        "x": 24.1164679,
+        "y": -110.3032952
+    }, {
+        "x": 23.2467867,
+        "y": -106.4221208
+    }, {
+        "x": 24.0289606,
+        "y": -104.645293
+    }, {
+        "x": 37.7577,
+        "y": -122.4376
+    }
+
+    ];
+
+    socket.on('connect', function() {
+        console.log('Conectado - página 1!');
+    });
+
+    socket.on('disconnect', function() {
+        console.log('disconnected');
+        // content.html("<b>Disconnected!</b>");
+    });
+
+    var map = {};
+
+    Number.prototype.formatMoney = function(pais) {
+
+        switch (pais) {
+            case 'MX':
+                var divisa_pais = 'MXN';
+                break;
+            case 'ES':
+                var divisa_pais = 'EUR';
+                break;
+            default:
+                var divisa_pais = 'USD';
+        }
+
+        return accounting.formatMoney(this, {
+            symbol: divisa_pais,
+            format: "%v %s"
+        });
+    };
+
+    $(document).ready(function() {
         var socket = io.connect();
+        var content = $('#filas');
 
-        var latitudes = [ 
-            { "x": 18.4583254, "y": -97.4843226},
-            { "x": 30.9871264, "y": -110.2839651},
-            { "x": 29.0784761, "y": -110.9793706},
-            { "x": 24.1164679, "y": -110.3032952},
-            { "x": 23.2467867, "y": -106.4221208},
-            { "x": 24.0289606, "y": -104.645293},
-            { "x": 21.8890872, "y": -102.2919885},
-        ];
+        $('.marquee').marquee({
+            duplicated: true,
+            duration: 20000,
+            delayBeforeStart: 0
+        });
 
-        var destinos = [
-            { "x":40.4378271,  "y":-3.6795366},
-            { "x": 37.1809462, "y":-3.5922032},
-            { "x": 37.891586,  "y":-4.7844853},
-            { "x": 36.718222,  "y":-4.4492669},
-            { "x":41.6516912,  "y":-0.8949809},
-            { "x": 24.1164679, "y": -110.3032952},
-            { "x": 23.2467867, "y": -106.4221208},
-            { "x": 24.0289606, "y": -104.645293},
-            { "x":37.7577,     "y":-122.4376}            
 
-        ];
+        var fechaactual = null;
 
         socket.on('connect', function() {
             console.log('Conectado - página 1!');
         });
 
-        socket.on('disconnect', function() {
-            console.log('disconnected');
-            // content.html("<b>Disconnected!</b>");
-        });
+        map = new Datamap({
+            element: document.getElementById('mapContainer'),
+            projection: 'mercator',
+            scope: 'world',
+            geographyConfig: {
+                borderWidth: 0,
+                hideAntarctica: true,
+                popupOnHover: false,
+                highlightOnHover: false,
+                highlightBorderWidth: 0
+            },
 
-        var map = {};
-
-        Number.prototype.formatMoney = function(pais){
-
-            switch (pais) {
-                case 'MX' :
-                    var divisa_pais = 'MXN';
-                    break;
-                case 'ES' :
-                    var divisa_pais = 'EUR';
-                    break;
-                default:
-                    var divisa_pais = 'USD';
+            fills: {
+                'PDM': 'rgba(241,90,36,0.8)',
+                defaultFill: 'rgba(255,255,255,0.2)',
+                'BLU': 'rgba(141,30,56,0.7)',
+                defaultFill: 'rgba(0,0,0,0.2)'
             }
-
-            return accounting.formatMoney(this, {
-                symbol: divisa_pais,
-                format: "%v %s"
-            });
-        };
-
-        $(document).ready(function() {
-            var socket = io.connect();
-            var content = $('#filas');
-
-            $('.marquee').marquee({
-                    duplicated: true,
-                    duration: 20000,
-                    delayBeforeStart: 0
-            });
-
-
-            var fechaactual = null;
-
-            socket.on('connect', function() {
-                console.log('Conectado - página 1!');
-            });
-
-            map = new Datamap({
-            	    	element: document.getElementById('mapContainer'),
-            	    	projection: 'mercator',
-            	    	scope: 'world',
-            	    	geographyConfig: {
-            	    		borderWidth: 0,
-                            hideAntarctica: true,
-                            popupOnHover: false,
-                            highlightOnHover: false,
-                            highlightBorderWidth: 0
-            	    	},
-
-            	    	fills: {
-        		        'PDM': 'rgba(241,90,36,0.8)',
-                		        defaultFill: 'rgba(255,255,255,0.2)',
-                        'BLU': 'rgba(141,30,56,0.7)',
-                                defaultFill: 'rgba(0,0,0,0.2)'
-        	    	}
-    		});
         });
+    });
 
-        function bubbles(datos) {
-            // console.log(datos);
+    socket.on('message', function(message) {
 
-            var bubble, gBubble, h, mini, pulse, svg, w;
-            
-            //Tamaño del contenedor TODO hacerlo del tamaño del mapa
-            w = $('.datamap').width();
-            h = $('.datamap').height();
+        // console.log(message);
 
-            svg = d3.select(".datamap")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h);
+        if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
+                (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
+            return 0;
+        }
 
-            bubble = svg.selectAll("g")
-                    .data(datos);
+        var datos = JSON.parse(message);
+        var pais = '{{ pais }}'.toUpperCase();
 
-            gBubble = bubble.enter()
+        switch (datos.canal_mensaje) {
+            case 'pademobile_log_total':
+                // console.log(datos);
+                if (pais == '') {
+                    $('.transacciones_amt').html(datos.datos.transacciones);
+                    $('.importe_amt').html(datos.datos.importe.formatMoney(pais));
+                    $('.comisiones_amt').html(datos.datos.comisiones.formatMoney(pais));
+                    $('#transacciones_completadas').html(datos.datos.transacciones_conimporte);
+                } else {
+                    if (datos.datos[pais] == null) {
+                        var cero = 0;
+                        $('.transacciones_amt').html(cero);
+                        $('.importe_amt').html(cero.formatMoney(pais));
+                        $('.comisiones_amt').html(cero.formatMoney(pais));
+                        $('#transacciones_completadas').html(cero);
+                    } else {
+                        $('.transacciones_amt').html(datos.datos[pais].transacciones);
+                        $('.importe_amt').html(datos.datos[pais].importe.formatMoney(pais));
+                        $('.comisiones_amt').html(datos.datos[pais].comisiones.formatMoney(pais));
+                        $('#transacciones_completadas').html(datos.datos[pais].transacciones_conimporte);
+                    }
+                }
+                break;
+
+            case 'pademobile_log_transaccion':
+
+                var item = latitudes[Math.floor(Math.random() * latitudes.length)];
+                var item1 = destinos[Math.floor(Math.random() * destinos.length)];
+
+                var radio = datos.importe;
+
+                var posicion = map.latLngToXY(item.x, item.y);
+                var receptor = map.latLngToXY(item1.x, item1.y);
+
+                // console.log(posicion);
+
+                if (datos.nombre_estado == 'Rechazada')
+                    var color = 'rgba(141,30,56,0.3)';
+                else if (datos.importe == null)
+                    var color = "rgba(135, 213, 150, 0.3)";
+                else
+                    var color = 'rgba(241,90,36,0.3)';
+
+                (radio == null) ? radio = 50: radio = Math.abs(datos.importe);
+
+                var datos_bubble = [{
+                    amount: radio,
+                    x: posicion[0],
+                    y: posicion[1],
+                    col: color
+                }];
+
+                var datos_envio = {
+                    amount: radio,
+                    origin: {
+                        x: receptor[0],
+                        y: receptor[1]
+                    },
+                    destination: {
+                        x: posicion[0],
+                        y: posicion[1]
+                    },
+                    col: color
+                };
+
+                pathD(datos_envio);
+                bubbles(datos_bubble);
+        }
+    });
+
+    function bubbles(datos) {
+        // console.log(datos);
+
+        var bubble, gBubble, h, mini, pulse, svg, w;
+
+        //Tamaño del contenedor TODO hacerlo del tamaño del mapa
+        w = $('.datamap').width();
+        h = $('.datamap').height();
+
+        svg = d3.select(".datamap")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+
+        bubble = svg.selectAll("g")
+                .data(datos);
+
+        gBubble = bubble.enter()
                 .append("g")
-                .attr("transform", function (d) {
+                .attr("transform", function(d) {
                     return "translate(" + d.x + "," + d.y + ")"
                 });
 
-            pulse = gBubble.append("circle")
+        pulse = gBubble.append("circle")
                 .attr("r", 0)
-                .attr("fill", function (d) {
-                        return d.col;
-                    })
-                .attr("stroke", function (d) {
-                        return d.col;
-                    })
+                .attr("fill", function(d) {
+                    return d.col;
+                })
+                .attr("stroke", function(d) {
+                    return d.col;
+                })
                 .attr("stroke-width", 0)
                 .attr("stroke-dasharray", "1,0");
-                
-            mini = gBubble.append("circle")
+
+        mini = gBubble.append("circle")
                 .attr("r", 4)
-                .attr("fill", function (d) {
-                        return d.col;
-                    });
+                .attr("fill", function(d) {
+                    return d.col;
+                });
 
-            mini.transition()
-                    .duration(4000)
-                    .delay(function (d, i) {
-                        return i * 200;
-                    })
-                    .attr("fill",function (d) {
-                        return d.col;
-                    })
-                    .each("end", function () {
-                        d3.select(this)
-                    })
-                    .remove();
+        mini.transition()
+                .duration(4000)
+                .delay(function(d, i) {
+                    return i * 200;
+                })
+                .attr("fill", function(d) {
+                    return d.col;
+                })
+                .each("end", function() {
+                    d3.select(this)
+                })
+                .remove();
 
-            pulse.transition()
-                    .duration(4600)
-                    .delay(function (d, i) {
-                        return i * 200;
-                    })
-                    .ease("bounce")
-                    .each("start", function () {
-                        d3.select(this)
-                                .attr("fill", "rgba(235,113,60,0.2")
-                                .attr("opacity", 1);
-                    })
-                    .attr("r", 6)
-                    .each("end", function () {
-                        d3.select(this)
+        pulse.transition()
+                .duration(4600)
+                .delay(function(d, i) {
+                    return i * 200;
+                })
+                .ease("bounce")
+                .each("start", function() {
+                    d3.select(this)
+                            .attr("fill", "rgba(235,113,60,0.2")
+                            .attr("opacity", 1);
+                })
+                .attr("r", 6)
+                .each("end", function() {
+                    d3.select(this)
 
-                    })
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "rgba(235,113,60,0.4)")
-                    .attr("stroke-dasharray", "2,2")
-                    .attr("fill", "rgba(235,113,60,0")
-                    .attr("r", function (d) {
-                        return d.amount / 2;
-                    })
-                    .attr("opacity", 0.4)
-                    .remove();      
-        }
+                })
+                .attr("stroke-width", 1)
+                .attr("stroke", "rgba(235,113,60,0.4)")
+                .attr("stroke-dasharray", "2,2")
+                .attr("fill", "rgba(235,113,60,0")
+                .attr("r", function(d) {
+                    return d.amount / 2;
+                })
+                .attr("opacity", 0.4)
+                .remove();
+    }
 
-        function pathD(datos){
+    function pathD(datos) {
 
 
         var h, svg, w, targetPath, map, projection, path;
@@ -206,126 +319,59 @@
         h = $('.datamap').height();
 
         projection = d3.geo
-                   .mercator()
-                   .scale(150)
-                   .translate([w / 2, h / 2]);
+                .mercator()
+                .scale(150)
+                .translate([w / 2, h / 2]);
 
         path = d3.geo
-             .path()
-             .pointRadius(2)
-             .projection(projection);
+                .path()
+                .pointRadius(2)
+                .projection(projection);
 
         svg = map.append("svg:g")
-            .attr("width", w)
-            .attr("height", h)
-            .attr("class", "test");
- 
-        pathinfo = [datos.origin,datos.destination];
+                .attr("width", w)
+                .attr("height", h)
+                .attr("class", "test");
+
+        var mid_point = {
+            x: (datos.destination.x + datos.destination.x),
+            y: ((datos.destination.y + datos.destination.y) / 2)
+        }
+        var pathinfo = [datos.origin, mid_point, datos.destination];
 
         pDraw = d3.svg.line()
-            .x(function(d){return d.x;})
-            .y(function(d){return d.y;})
-            .interpolate("cardinal"); 
+                .x(function(d) {
+                    return d.x;
+                })
+                .y(function(d) {
+                    return d.y;
+                })
+                .interpolate("cardinal")
+                .tension(0);
 
         var testing = svg.append("svg:path")
-            .attr("d", pDraw(pathinfo))
-            .style("stroke-width", 2)
-            .style("fill", "none")
-            .style("stroke", "rgba(241,90,36,0.2)");
-           
-    var totalLength = testing.node().getTotalLength();
+                .attr("d", pDraw(pathinfo))
+                .style("stroke-width", 2)
+                .style("fill", "none")
+                .style("stroke", "rgba(241,90,36,0.2)");
 
-        testing  
-            .attr("stroke-dasharray", totalLength + " " + totalLength)
-            .attr("stroke-dashoffset", totalLength)
-            .transition()
-            .duration(1200)
-            .ease("ease-out")
-            .attr("stroke-dashoffset", 0)
+        var totalLength = testing.node().getTotalLength();
 
-    svg.transition()  
-        .duration(2000)  
-        .each("end", function () {
-            d3.select(this)
-            .style("opacity",0);
-        });
-        }
-    
-        socket.on('message', function(message){
+        testing
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(1200)
+                .ease("ease-out")
+                .attr("stroke-dashoffset", 0)
 
-           // console.log(message);
-
-            if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
-                    (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
-                    return 0;
-                }
-            
-            var datos = JSON.parse(message);
-            var pais = '{{ pais }}'.toUpperCase();
-
-            switch(datos.canal_mensaje) {
-                case 'pademobile_log_total' :
-                    // console.log(datos);
-                    if (pais == '') {
-                        $('.transacciones_amt').html(datos.datos.transacciones);
-                        $('.importe_amt').html(datos.datos.importe.formatMoney(pais));
-                        $('.comisiones_amt').html(datos.datos.comisiones.formatMoney(pais));
-                        $('#transacciones_completadas').html(datos.datos.transacciones_conimporte);
-                    } else {
-                        if (datos.datos[pais] == null) {
-                            var cero = 0;
-                            $('.transacciones_amt').html(cero);
-                            $('.importe_amt').html(cero.formatMoney(pais));
-                            $('.comisiones_amt').html(cero.formatMoney(pais));
-                            $('#transacciones_completadas').html(cero);
-                        } else {
-                            $('.transacciones_amt').html(datos.datos[pais].transacciones);
-                            $('.importe_amt').html(datos.datos[pais].importe.formatMoney(pais));
-                            $('.comisiones_amt').html(datos.datos[pais].comisiones.formatMoney(pais));
-                            $('#transacciones_completadas').html(datos.datos[pais].transacciones_conimporte);
-                        }
-                    }
-                break;
-
-                case 'pademobile_log_transaccion' :
-
-                    var item = latitudes[Math.floor(Math.random()*latitudes.length)];
-                    var item1 = destinos[Math.floor(Math.random()*destinos.length)];
-
-                    var radio = datos.importe;
-
-                    var posicion = map.latLngToXY(item.x, item.y);
-                    var receptor = map.latLngToXY(item1.x, item1.y);
-
-                    // console.log(posicion);
-
-                    if (datos.nombre_estado == 'Rechazada' ) 
-                        var color = 'rgba(141,30,56,0.3)';
-                    else if (datos.importe == null)
-                        var color = "rgba(135, 213, 150, 0.3)";
-                    else
-                        var color = 'rgba(241,90,36,0.3)';
-                
-                    (radio == null) ? radio = 50 : radio = Math.abs(datos.importe);
-
-                    var datos_bubble = [ {
-                        amount: radio,
-                        x: posicion[0],
-                        y: posicion[1],
-                        col: color
-                     }];
-
-                    var datos_envio = {
-                        amount: radio,
-                        origin: { x:receptor[0],y:receptor[1]},
-                        destination:{ x:posicion[0],y:posicion[1]},                       
-                        col: color
-                     };
-
-                    pathD(datos_envio);
-                    bubbles(datos_bubble);
-            }
-        }) ;
+        svg.transition()
+                .duration(2000)
+                .each("end", function() {
+                    d3.select(this)
+                            .style("opacity", 0);
+                });
+    }
     </script>
 </head>
 
