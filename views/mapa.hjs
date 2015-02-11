@@ -72,9 +72,102 @@
     },
     {   "x":-23.5349377,
         "y":-40.7677461
-    }];
+    },
+    {"x":24.1868998,"y":-100.4447506},
+    {"x":25.3167702,"y":-102.4882077},
+    {"x":19.9843088,"y":-100.4744294},
+    {"x":24.6788314,"y":-105.6022981},
+    {"x":16.7618136,"y":-97.4181871},
+    {"x":17.39626,  "y":-94.2034487},
+    {"x":18.9421784,"y":-87.7122195},
+    {"x":20.8492387,"y":-87.136841}
+    ];
 
     var destinos = [{
+        "x": 40.4378271,
+        "y": -3.6795366
+    }, {
+        "x": 37.1809462,
+        "y": -3.5922032
+    }, {
+        "x": 37.891586,
+        "y": -4.7844853
+    }, {
+        "x": 36.718222,
+        "y": -4.4492669
+    }, {
+        "x": 41.6516912,
+        "y": -0.8949809
+    },
+    {   "x":-21.1651508,
+        "y":27.5026845
+    },
+    {   "x":-22.5446721,
+        "y":27.1175193
+    },
+    {   "x":-22.40475,
+        "y":26.7228699
+    },
+    {   "x":43.79279,
+        "y":11.6267973
+    },
+    {   "x":41.1344251,
+        "y":0.0829792
+    },
+    {   "x":41.1344251,
+        "y":0.0829792
+    }];
+
+var randPos  = [{
+        "x": 18.4583254,
+        "y": -97.4843226
+    }, {
+        "x": 30.9871264,
+        "y": -110.2839651
+    }, {
+        "x": 29.0784761,
+        "y": -110.9793706
+    }, {
+        "x": 24.1164679,
+        "y": -110.3032952
+    }, {
+        "x": 23.2467867,
+        "y": -106.4221208
+    }, {
+        "x": 24.0289606,
+        "y": -104.645293
+    }, {
+        "x": 21.8890872,
+        "y": -102.2919885
+    }, 
+    {   "x": 37.3835801, 
+        "y":-122.013269
+    },
+    {   "x": 37.3812709, 
+        "y": -122.0828975
+    },
+    {   "x":28.9273087,
+        "y":-90.1761019
+    },
+    {   "x":35.0532968,
+        "y":-95.2078399
+    },
+    {   "x":35.0532968,
+        "y":-95.2078399
+    },
+    {   "x":32.0135761,
+        "y":-82.0681915
+    },
+    {   "x":32.0135761,
+        "y":-82.1121368
+    },
+    {   "x":-14.240908,
+        "y":-40.0101946
+    },
+    {   "x":-23.5349377,
+        "y":-40.7677461
+    },
+    {
         "x": 40.4378271,
         "y": -3.6795366
     }, {
@@ -183,7 +276,7 @@
 
     socket.on('message', function(message) {
 
-        // console.log(message);
+        console.log(message);
 
         if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
                 (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
@@ -399,6 +492,8 @@
                 .duration(1200)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
+                .transition()
+                    .style("stroke","rgba(241,90,36,0)")
 
         svg.transition()
                 .duration(2000)
@@ -409,7 +504,6 @@
     }
 
     function oneSecondFunction() {
-    // stuff you want to do every second
 
     var item = latitudes[Math.floor(Math.random() * latitudes.length)];
     var item1 = destinos[Math.floor(Math.random() * destinos.length)];
@@ -467,7 +561,7 @@
                 .attr("d", pDraw(pathinfo))
                 .style("stroke-width", 2)
                 .style("fill", "none")
-                .style("stroke", "rgba(70, 214, 154, 0.1)");
+                .style("stroke", "rgba(70, 214, 154, 0.2)");
 
         var totalLength = testing.node().getTotalLength();
 
@@ -478,6 +572,9 @@
                 .duration(1200)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
+                .transition()
+                    .style("stroke","rgba(70, 214, 154, 0)")
+                ;
 
         svg.transition()
                 .duration(2000)
@@ -522,12 +619,12 @@
     <div class="bottomLine marquee">
 
             <span class="barTitle">Transactions</span>
-            <span class="barElement importe_amt"> 0 </span>
-
-            <span class="barTitle">MANAGED AMOUNT</span>
             <span class="barElement transacciones_amt"> 0 </span>
 
-            <span class="barTitle">Average Amount</span>
+            <span class="barTitle">MANAGED AMOUNT</span>
+            <span class="barElement importe_amt"> 0 </span>
+
+            <span class="barTitle">Fees</span>
             <span class="barElement comisiones_amt"> 0 </span>
 
     </div>
