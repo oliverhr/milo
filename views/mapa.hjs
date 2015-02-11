@@ -12,6 +12,8 @@
 
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
+    <link rel="icon" type="image/png" href="favicon.png">
+
     <script src="/javascripts/d3.v3.min.js"></script>
     <script src="/javascripts/topojson.v1.min.js"></script>
     <script src="/javascripts/datamaps.world.min.js"></script>
@@ -337,10 +339,8 @@
                     <div class="icon-list">
                         <a href="/log"><i class="fa fa-table"></i><span>Transactions</span></a>
                         <a href="/mapa"><i class="fa fa-globe"></i><span>Map</span></a>
-                        <a href="/mapa"><i class="fa fa-area-chart"></i><span>Dashboard</span></a>
-                        <a href="/mapa"><i class="fa fa-database"></i>
-
-<span>Big Data Collector</span></a>
+                        <a href="/pagina2"><i class="fa fa-area-chart"></i><span>Dashboard</span></a>
+                        <a href="/mapa"><i class="fa fa-database"></i><span>Big Data Collector</span></a>
                         <a href="/mapa"><i class="fa fa-cog"></i><span>Settings</span></a>
 
 
