@@ -24,6 +24,50 @@
     <script>
     var socket = io.connect();
 
+    var origenes = [{
+        "x": 18.4583254,
+        "y": -97.4843226
+    }, {
+        "x": 30.9871264,
+        "y": -110.2839651
+    }, {
+        "x": 29.0784761,
+        "y": -110.9793706
+    }, {
+        "x": 24.1164679,
+        "y": -110.3032952
+    }, {
+        "x": 23.2467867,
+        "y": -106.4221208
+    }, {
+        "x": 24.0289606,
+        "y": -104.645293
+    }, {
+        "x": 21.8890872,
+        "y": -102.2919885
+    }, 
+    {   "x": 37.3835801, 
+        "y":-122.013269
+    },
+    {   "x": 37.3812709, 
+        "y": -122.0828975
+    },
+    {   "x":28.9273087,
+        "y":-90.1761019
+    },
+    {   "x":35.0532968,
+        "y":-95.2078399
+    },
+    {   "x":35.0532968,
+        "y":-95.2078399
+    },
+    {   "x":32.0135761,
+        "y":-82.0681915
+    },
+    {   "x":32.0135761,
+        "y":-82.1121368
+    },
+    ];
     var latitudes = [{
         "x": 18.4583254,
         "y": -97.4843226
@@ -80,43 +124,27 @@
     {"x":16.7618136,"y":-97.4181871},
     {"x":17.39626,  "y":-94.2034487},
     {"x":18.9421784,"y":-87.7122195},
-    {"x":20.8492387,"y":-87.136841}
+    {"x":20.8492387,"y":-87.136841},
+    {"x":40.698066, "y":-117.061800},
+    {"x":39.665693, "y":-112.886995},
+    {"x":42.180438, "y":-103.284945},
+    {"x":40.664741, "y":-93.177523},
+    {"x":44.887730, "y":-114.974399},
+    {"x":43.565205, "y":-95.155062},
+    {"x":-31.131263,"y": -63.913230},
+    {"x":-29.361359,"y": -59.829063},
+    {"x":25.798760, "y":-102.059001},
+    {"x":28.515866, "y":-106.376628},
+    {"x":36.190078, "y":-100.971354},
+    {"x":42.423417, "y":-115.447175},
+    {"x":35.657253, "y":-93.375641},
+    {"x":41.983954, "y":-101.901032},
+    {"x":43.691669, "y":-75.336090},
+    {"x":40.863639, "y":-73.435455},
+    {"x":40.913472, "y":-72.798248},
+    {"x":43.221150, "y":-72.523590}
     ];
-
-    var destinos = [{
-        "x": 40.4378271,
-        "y": -3.6795366
-    }, {
-        "x": 37.1809462,
-        "y": -3.5922032
-    }, {
-        "x": 37.891586,
-        "y": -4.7844853
-    }, {
-        "x": 36.718222,
-        "y": -4.4492669
-    }, {
-        "x": 41.6516912,
-        "y": -0.8949809
-    },
-    {   "x":-21.1651508,
-        "y":27.5026845
-    },
-    {   "x":-22.5446721,
-        "y":27.1175193
-    },
-    {   "x":-22.40475,
-        "y":26.7228699
-    },
-    {   "x":43.79279,
-        "y":11.6267973
-    },
-    {   "x":41.1344251,
-        "y":0.0829792
-    },
-    {   "x":41.1344251,
-        "y":0.0829792
-    }];
+    
 
 var randPos  = [{
         "x": 18.4583254,
@@ -199,7 +227,14 @@ var randPos  = [{
     },
     {   "x":41.1344251,
         "y":0.0829792
-    }];
+    },
+    {"x":34.614214,"y": -109.184750},
+    {"x":32.073567,"y": -92.634351},
+    {"x":32.594398,"y": -102.347641},
+    {"x":35.403187,"y": -120.818980},
+    {"x":33.370761,"y": -112.147099},
+    {"x":35.119029,"y": -106.591381}
+    ];
 
 
     socket.on('connect', function() {
@@ -269,8 +304,8 @@ var randPos  = [{
             }
         });
 
-        setInterval(oneSecondFunction, 700);
-        setInterval(twoSecondFunction, 300);
+        setInterval(oneSecondFunction, 600);
+        setInterval(twoSecondFunction, 600);
 
     });
 
@@ -312,8 +347,8 @@ var randPos  = [{
 
             case 'pademobile_log_transaccion':
 
-                var item = latitudes[Math.floor(Math.random() * latitudes.length)];
-                var item1 = destinos[Math.floor(Math.random() * destinos.length)];
+                var item = origenes[Math.floor(Math.random() * origenes.length)];
+                var item1 = latitudes[Math.floor(Math.random() * latitudes.length)];
 
                 var radio = datos.importe;
 
@@ -461,10 +496,14 @@ var randPos  = [{
                 .attr("height", h)
                 .attr("class", "test");
 
+        var xNew = ((datos.origin.x + datos.destination.x) / 2);
+        var yNew = ((datos.origin.y + datos.destination.y) / 2);
+
         var mid_point = {
-            x: ((datos.destination.x + datos.origin.x) / 2),
-            y: ((datos.destination.y + datos.origin.y) / 2.5)
+            x: ( xNew - (xNew * 0.10) ),
+            y: ( yNew - (yNew * 0.10) )
         }
+
         var pathinfo = [datos.origin, mid_point, datos.destination];
 
         pDraw = d3.svg.line()
@@ -474,8 +513,7 @@ var randPos  = [{
                 .y(function(d) {
                     return d.y;
                 })
-                .interpolate("basis")
-                .tension(0.5);
+                .interpolate("basis");
 
         var testing = svg.append("svg:path")
                 .attr("d", pDraw(pathinfo))
@@ -542,10 +580,14 @@ var randPos  = [{
                 .attr("height", h)
                 .attr("class", "test");
 
+        var xNew = ((origin.x + destination.x) / 2);
+        var yNew = ((origin.y + destination.y) / 2);
+
         var mid_point = {
-            x: ((origin.x + origin.x) / 3),
-            y: ((destination.y + destination.y) / 2.5)
+            x: ( xNew - (xNew * 0.10) ),
+            y: ( yNew - (yNew * 0.10) )
         }
+
         var pathinfo = [origin, mid_point, destination];
         pDraw = d3.svg.line()
                 .x(function(d) {
@@ -554,8 +596,7 @@ var randPos  = [{
                 .y(function(d) {
                     return d.y;
                 })
-                .interpolate("basis")
-                .tension(0.5);
+                .interpolate("basis");
 
         var testing = svg.append("svg:path")
                 .attr("d", pDraw(pathinfo))
@@ -569,7 +610,7 @@ var randPos  = [{
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(1000)
+                .duration(1500)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
                 .transition()
@@ -577,7 +618,7 @@ var randPos  = [{
                 ;
 
         svg.transition()
-                .duration(2000)
+                .duration(2500)
                 .each("end", function() {
                     d3.select(this)
                     .remove();
@@ -588,7 +629,7 @@ var randPos  = [{
      function oneSecondFunction() {
 
     var item1 = latitudes[Math.floor(Math.random() * latitudes.length)];
-    var item = destinos[Math.floor(Math.random() * destinos.length)];
+    var item = latitudes[Math.floor(Math.random() * latitudes.length)];
 
     var posicion = map.latLngToXY(item.x, item.y);
     var receptor = map.latLngToXY(item1.x, item1.y);
@@ -624,9 +665,12 @@ var randPos  = [{
                 .attr("height", h)
                 .attr("class", "test");
 
+        var xNew = ((origin.x + destination.x) / 2);
+        var yNew = ((origin.y + destination.y) / 2);
+
         var mid_point = {
-            x: ((origin.x + origin.x) / 1.3),
-            y: ((destination.y + destination.y) / 3)
+            x: ( xNew - (xNew * 0.010) ),
+            y: ( yNew - (yNew * 0.020) )
         }
         var pathinfo = [origin, mid_point, destination];
         pDraw = d3.svg.line()
@@ -636,8 +680,7 @@ var randPos  = [{
                 .y(function(d) {
                     return d.y;
                 })
-                .interpolate("basis")
-                .tension(0.5);
+                .interpolate("basis");
 
         var testing = svg.append("svg:path")
                 .attr("d", pDraw(pathinfo))
@@ -651,7 +694,7 @@ var randPos  = [{
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(1000)
+                .duration(1500)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
                 .transition()
@@ -659,7 +702,7 @@ var randPos  = [{
                 ;
 
         svg.transition()
-                .duration(2000)
+                .duration(3000)
                 .each("end", function() {
                     d3.select(this)
                     .remove();
