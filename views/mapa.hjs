@@ -167,11 +167,10 @@ var randPos  = [{
     {   "x":-23.5349377,
         "y":-40.7677461
     },
-    {
-        "x": 40.4378271,
+    {   "x": 40.4378271,
         "y": -3.6795366
-    }, {
-        "x": 37.1809462,
+    }, 
+    {   "x": 37.1809462,
         "y": -3.5922032
     }, {
         "x": 37.891586,
@@ -270,13 +269,14 @@ var randPos  = [{
             }
         });
 
-        setInterval(oneSecondFunction, 1000);
+        setInterval(oneSecondFunction, 700);
+        setInterval(twoSecondFunction, 300);
 
     });
 
     socket.on('message', function(message) {
 
-        console.log(message);
+        // console.log(message);
 
         if ((message.indexOf('"canal_mensaje":"pademobile_log_total"') == -1) &&
                 (message.indexOf('"canal_mensaje":"pademobile_log_transaccion"') == -1)) {
@@ -503,10 +503,10 @@ var randPos  = [{
                 });
     }
 
-    function oneSecondFunction() {
+    function twoSecondFunction() {
 
-    var item = latitudes[Math.floor(Math.random() * latitudes.length)];
-    var item1 = destinos[Math.floor(Math.random() * destinos.length)];
+    var item = randPos[Math.floor(Math.random() * randPos.length)];
+    var item1 = randPos[Math.floor(Math.random() * randPos.length)];
 
     var posicion = map.latLngToXY(item.x, item.y);
     var receptor = map.latLngToXY(item1.x, item1.y);
@@ -569,7 +569,89 @@ var randPos  = [{
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(1200)
+                .duration(1000)
+                .ease("ease-out")
+                .attr("stroke-dashoffset", 0)
+                .transition()
+                    .style("stroke","rgba(70, 214, 154, 0)")
+                ;
+
+        svg.transition()
+                .duration(2000)
+                .each("end", function() {
+                    d3.select(this)
+                    .remove();
+                });
+
+    }
+
+     function oneSecondFunction() {
+
+    var item1 = latitudes[Math.floor(Math.random() * latitudes.length)];
+    var item = destinos[Math.floor(Math.random() * destinos.length)];
+
+    var posicion = map.latLngToXY(item.x, item.y);
+    var receptor = map.latLngToXY(item1.x, item1.y);
+
+    var origin = {
+    x: receptor[0],
+    y: receptor[1]
+    };
+    var destination = {
+    x: posicion[0],
+    y: posicion[1]
+    };
+
+    var h, svg, w, targetPath, mapD, projection, path;
+
+        mapD = d3.select(".datamap");
+
+        w = $('.datamap').width();
+        h = $('.datamap').height();
+
+        projection = d3.geo
+                .mercator()
+                .scale(150)
+                .translate([w / 2, h / 2]);
+
+        path = d3.geo
+                .path()
+                .pointRadius(2)
+                .projection(projection);
+
+        svg = mapD.append("svg:g")
+                .attr("width", w)
+                .attr("height", h)
+                .attr("class", "test");
+
+        var mid_point = {
+            x: ((origin.x + origin.x) / 1.3),
+            y: ((destination.y + destination.y) / 3)
+        }
+        var pathinfo = [origin, mid_point, destination];
+        pDraw = d3.svg.line()
+                .x(function(d) {
+                    return d.x;
+                })
+                .y(function(d) {
+                    return d.y;
+                })
+                .interpolate("basis")
+                .tension(0.5);
+
+        var testing = svg.append("svg:path")
+                .attr("d", pDraw(pathinfo))
+                .style("stroke-width", 2)
+                .style("fill", "none")
+                .style("stroke", "rgba(70, 214, 154, 0.2)");
+
+        var totalLength = testing.node().getTotalLength();
+
+        testing
+                .attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(1000)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
                 .transition()
