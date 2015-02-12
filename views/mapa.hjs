@@ -305,7 +305,7 @@ var randPos  = [{
         });
 
         setInterval(oneSecondFunction, 600);
-        setInterval(twoSecondFunction, 600);
+        setInterval(twoSecondFunction, 500);
 
     });
 
@@ -350,21 +350,36 @@ var randPos  = [{
                 var item = origenes[Math.floor(Math.random() * origenes.length)];
                 var item1 = latitudes[Math.floor(Math.random() * latitudes.length)];
 
-                var radio = datos.importe;
+                var radio;
 
                 var posicion = map.latLngToXY(item.x, item.y);
                 var receptor = map.latLngToXY(item1.x, item1.y);
 
                 // console.log(posicion);
 
+                if(datos.importe == null){
+                    radio = 5;
+                } else if (datos.importe < 100){
+                    radio = Math.abs(datos.importe) / 10;
+                }
+                else if (datos.importe < 1000){
+                    radio = Math.abs(datos.importe) / 10;
+                }
+                else if (datos.importe < 10000){
+                    radio = Math.abs(datos.importe) / 1000;
+                }
+
+                else if (datos.importe < 100000){
+                    radio = Math.abs(datos.importe) / 100000;
+                }
+                
+                console.log(radio);
                 if (datos.nombre_estado == 'Rechazada')
                     var color = 'rgba(141,30,56,0.3)';
                 else if (datos.importe == null)
                     var color = "rgba(135, 213, 150, 0.3)";
                 else
                     var color = 'rgba(241,90,36,0.3)';
-
-                (radio == null) ? radio = 50: radio = Math.abs(datos.importe);
 
                 var datos_bubble = [{
                     amount: radio,
@@ -422,53 +437,47 @@ var randPos  = [{
                 .attr("stroke", function(d) {
                     return d.col;
                 })
-                .attr("stroke-width", 0)
+                .attr("stroke-width", 1)
                 .attr("stroke-dasharray", "1,0");
 
         mini = gBubble.append("circle")
-                .attr("r", 4)
+                .attr("r", 2)
                 .attr("fill", function(d) {
                     return d.col;
                 });
 
         mini.transition()
-                .duration(4000)
-                .delay(function(d, i) {
-                    return i * 200;
-                })
+                .duration(1500)
                 .attr("fill", function(d) {
                     return d.col;
                 })
+                .transition()
+                    .style("fill","rgba(255,255,255,0)")
                 .each("end", function() {
                     d3.select(this)
                 })
                 .remove();
 
         pulse.transition()
-                .duration(4600)
-                .delay(function(d, i) {
-                    return i * 200;
-                })
+                .duration(1500)
+                
                 .ease("bounce")
                 .each("start", function() {
                     d3.select(this)
-                            .attr("fill", "rgba(235,113,60,0.2")
+                            .attr("fill", "rgba(25,25,25,0.2")
                             .attr("opacity", 1);
                 })
-                .attr("r", 6)
-                .each("end", function() {
-                    d3.select(this)
-
+                .attr("r", function(d) {
+                    return d.amount;
                 })
                 .attr("stroke-width", 1)
-                .attr("stroke", "rgba(235,113,60,0.4)")
-                .attr("stroke-dasharray", "2,2")
-                .attr("fill", "rgba(235,113,60,0")
-                .attr("r", function(d) {
-                    return d.amount / 2;
+                .transition()
+                .style("stroke", "rgba(255,255,255,0)")
+                .style("fill", "rgba(25,25,25,0")
+                .each("end", function() {
+                    d3.select(this)
+                    .remove();
                 })
-                .attr("opacity", 0.4)
-                .remove();
     }
 
     function pathD(datos) {
