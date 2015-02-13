@@ -373,7 +373,6 @@ var randPos  = [{
                     radio = Math.abs(datos.importe) / 100000;
                 }
                 
-                console.log(radio);
                 if (datos.nombre_estado == 'Rechazada')
                     var color = 'rgba(141,30,56,0.3)';
                 else if (datos.importe == null)
@@ -703,7 +702,7 @@ var randPos  = [{
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
-                .duration(1500)
+                .duration(1200)
                 .ease("ease-out")
                 .attr("stroke-dashoffset", 0)
                 .transition()
@@ -711,7 +710,7 @@ var randPos  = [{
                 ;
 
         svg.transition()
-                .duration(3000)
+                .duration(2000)
                 .each("end", function() {
                     d3.select(this)
                     .remove();
@@ -732,8 +731,8 @@ var randPos  = [{
                         <a href="/mapa"><i class="fa fa-globe"></i><span>Map</span></a>
                         <a href="/pagina2"><i class="fa fa-area-chart"></i><span>Dashboard</span></a>
                         <a href="/log"><i class="fa fa-table"></i><span>Transactions</span></a>
-                        <a href="/mapa"><i class="fa fa-database"></i><span>Big Data Collector</span></a>
-                        <a href="/mapa"><i class="fa fa-cog"></i><span>Settings</span></a>
+                        <a href="/pagina3"><i class="fa fa-database"></i><span>Big Data Collector</span></a>
+                        <a href="/pagina3"><i class="fa fa-cog"></i><span>Settings</span></a>
                     </div>
                 </nav>
                 <button class="close-button" id="close-button"><i class="fa fa-times"></i></button>
