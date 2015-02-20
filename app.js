@@ -1,8 +1,8 @@
 /**
  * Get Current Environment
  */
-var environment = process.env.NODE_ENV ? process.env.NODE_ENV: 'Development';
-console.log('On Enviroment: ' + environment);
+var environment = process.env.NODE_ENV ? process.env.NODE_ENV: 'DEVELOPMENT';
+console.log('Current Enviroment: ' + environment);
 
 /**
  * Module dependencies
@@ -29,11 +29,6 @@ var transacciones_pademobile = require('./acumuladores/transacciones_pademobile.
  * Application instance
  */
 var app = express();
-
-// Use the GoogleStrategy within Passport.
-//   Strategies in passport require a `validate` function, which accept
-//   credentials (in this case, an OpenID identifier and profile), and invoke a
-//   callback with a user object.
 
 var url_base = 'http://localhost:3000/';
 var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
@@ -76,7 +71,11 @@ switch (environment) {
 
 
 /**
- * Oauth Settings
+ * Use the GoogleStrategy within Passport.
+ *
+ * Strategies in passport require a `validate` function, which accept
+ * credentials (in this case, an OpenID identifier and profile), and invoke a
+ * callback with a user object.
  */
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -101,12 +100,14 @@ passport.use(new GoogleStrategy({
 app.set('port', process.env.PORT);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hjs');
+
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+//app.use(express.bodyParser());
+app.use(express.urlencoded());
+app.use(express.json());
 app.use(express.methodOverride());
 
-// app.use(express.session({ secret: 'keyboard cat' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'keyboard cat' }));
@@ -114,13 +115,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
 
-// Passport session setup.
-//   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
-//   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.  However, since this example does not
-//   have a database of user records, the complete Google profile is serialized
-//   and deserialized.
+/**
+ * Passport session setup.
+ *
+ * To support persistent login sessions, Passport needs to be able to
+ * serialize users into and deserialize users out of the session.  Typically,
+ * this will be as simple as storing the user ID when serializing, and finding
+ * the user by ID when deserializing.  However, since this example does not
+ * have a database of user records, the complete Google profile is serialized
+ * and deserialized.
+ */
 passport.serializeUser( function(user, done) {
     console.log('serialize');
     done(null, user);
