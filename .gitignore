@@ -1,5 +1,6 @@
 node_modules
 .idea
+.swp
 
 .DS_Store
 .AppleDouble
@@ -8,6 +9,8 @@ node_modules
 # Icon must end with two \r
 Icon
 
+# git temporal conflic files
+*.orig
 
 # Thumbnails
 ._*

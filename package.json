@@ -9,7 +9,12 @@
     "express": "~3.4.0",
     "hjs": "*",
     "socket.io": "~0.9.6",
-    "redis": "*"
+    "redis": "*",
+    "passport": "*",
+    "passport-google": "*",
+    "connect-ensure-login": "*",
+    "moment": "*",
+    "passport-google-oauth": "*"
   },
  "engines": {
      "node": "0.10.x",
