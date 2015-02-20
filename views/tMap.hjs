@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Mapa TEST {{ title }}</title>
@@ -2185,5 +2186,4 @@ socket.on('message', function(message){
 </script>
 
 </body>
-
 
