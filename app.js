@@ -1,12 +1,8 @@
 /**
- * Get Current Environment
- */
-var environment = process.env.NODE_ENV ? process.env.NODE_ENV: 'DEVELOPMENT';
-console.log('Current Enviroment: ' + environment);
-
-/**
  * Module dependencies
  */
+var config = require('./settings')
+console.log(config.url_base);
 
 var express = require('express');
 var io = require('socket.io');
@@ -20,7 +16,7 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 /**
  * Local dependencies
  */
-var routes = require('./routes');
+// var routes = require('./routes');
 var paginas = require('./routes/paginas');
 var acumulador = require('./acumulador.js');
 var transacciones_pademobile = require('./acumuladores/transacciones_pademobile.js');
@@ -30,46 +26,6 @@ var transacciones_pademobile = require('./acumuladores/transacciones_pademobile.
  */
 var app = express();
 
-var url_base = 'http://localhost:3000/';
-var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
-var clientSecret = "-_eBhijCGke5k458Y--IblkU";
-var host_redis = 'localhost';
-var llamada_divisas = {
-    host: 'localhost',
-    port: 50000,
-    path: '/ws/divisas.py/listado',
-    method: 'GET'
-};
-process.env.PORT = 3000;
-
-switch (environment) {
-    case 'staging':
-        url_base = 'http://localhost:3000/';
-        clientSecret = "-_eBhijCGke5k458Y--IblkU";
-        host_redis = 'repos.pademobile.com';
-        llamada_divisas = {
-            host: 'www.pademobile.com',
-            port: 50,
-            path: '/ws/divisas.py/listado',
-            method: 'GET'
-        };
-    break;
-
-    case 'production':
-        url_base = 'http://milo.pademobile.com/';
-        clientSecret = 'ZQJOtRc3jqiuwjifZ_KRU7fb';
-        host_redis = 'localhost';
-        llamada_divisas = {
-            host: '192.168.250.162',
-            port: 81,
-            path: '/ws/divisas.py/listado',
-            method: 'GET'
-        };
-        process.env.PORT = 80;
-    break;
-}
-
-
 /**
  * Use the GoogleStrategy within Passport.
  *
@@ -78,11 +34,12 @@ switch (environment) {
  * callback with a user object.
  */
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var clientID = "313554578831-lc4tgo8tv2ovrt426b2h0vh6snlg55cq.apps.googleusercontent.com";
 
 passport.use(new GoogleStrategy({
         clientID: clientID,
-        clientSecret: clientSecret,
-        callbackURL: url_base+"auth/google/callback"
+        clientSecret: config.clientSecret,
+        callbackURL: config.url_base + "auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
@@ -103,7 +60,6 @@ app.set('view engine', 'hjs');
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
-//app.use(express.bodyParser());
 app.use(express.urlencoded());
 app.use(express.json());
 app.use(express.methodOverride());
@@ -175,7 +131,7 @@ server.listen(app.get('port'), function() {
  * Redis connection
  */
 const redis = require('redis');
-const client = redis.createClient('6379',host_redis);
+const client = redis.createClient('6379', config.host_redis);
 console.log('info', 'connected to redis server');
 
 
@@ -184,10 +140,10 @@ var divisas = {};
 if (!module.parent) {
     const socket  = io.listen(server);
 
-    if ((environment == 'staging')) {
-        https.request(llamada_divisas, callback_divisas).end();
+    if ((config.env == 'staging')) {
+        https.request(config.llamada_divisas, callback_divisas).end();
     } else {
-        http.request(llamada_divisas, callback_divisas).end();
+        http.request(config.llamada_divisas, callback_divisas).end();
     }
 
     function callback_divisas(res) {
@@ -222,13 +178,13 @@ if (!module.parent) {
                 "nombre": "Dólares USA",
                 "placeholder_divisa": "0.00 USD"
             });
-            console.log(divisas);
+            console.log('Number of currencies parsed: ' + divisas.length);
 
             socket.on('connection', function(client) {
-                console.log('antes de suscribirnos a redis '+host_redis);
+                console.log('antes de suscribirnos a redis ' + config.host_redis);
 
-                const subscribe = redis.createClient('6379',host_redis);
-                const redis_cli = redis.createClient('6379',host_redis);
+                const subscribe = redis.createClient('6379', config.host_redis);
+                const redis_cli = redis.createClient('6379', config.host_redis);
 
                 console.log('Suscribiéndonos');
 
