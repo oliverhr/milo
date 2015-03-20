@@ -45,11 +45,11 @@
     }, {
         "x": 21.8890872,
         "y": -102.2919885
-    }, 
-    {   "x": 37.3835801, 
+    },
+    {   "x": 37.3835801,
         "y":-122.013269
     },
-    {   "x": 37.3812709, 
+    {   "x": 37.3812709,
         "y": -122.0828975
     },
     {   "x":28.9273087,
@@ -89,11 +89,11 @@
     }, {
         "x": 21.8890872,
         "y": -102.2919885
-    }, 
-    {   "x": 37.3835801, 
+    },
+    {   "x": 37.3835801,
         "y":-122.013269
     },
-    {   "x": 37.3812709, 
+    {   "x": 37.3812709,
         "y": -122.0828975
     },
     {   "x":28.9273087,
@@ -144,7 +144,7 @@
     {"x":40.913472, "y":-72.798248},
     {"x":43.221150, "y":-72.523590}
     ];
-    
+
 
 var randPos  = [{
         "x": 18.4583254,
@@ -167,11 +167,11 @@ var randPos  = [{
     }, {
         "x": 21.8890872,
         "y": -102.2919885
-    }, 
-    {   "x": 37.3835801, 
+    },
+    {   "x": 37.3835801,
         "y":-122.013269
     },
-    {   "x": 37.3812709, 
+    {   "x": 37.3812709,
         "y": -122.0828975
     },
     {   "x":28.9273087,
@@ -197,7 +197,7 @@ var randPos  = [{
     },
     {   "x": 40.4378271,
         "y": -3.6795366
-    }, 
+    },
     {   "x": 37.1809462,
         "y": -3.5922032
     }, {
@@ -298,14 +298,12 @@ var randPos  = [{
 
             fills: {
                 'PDM': 'rgba(241,90,36,0.8)',
-                defaultFill: 'rgba(255,255,255,0.2)',
                 'BLU': 'rgba(141,30,56,0.7)',
                 defaultFill: 'rgba(0,0,0,0.2)'
             }
         });
 
-        setInterval(oneSecondFunction, 600);
-        setInterval(twoSecondFunction, 500);
+        setInterval(twoSecondFunction, 600);
 
     });
 
@@ -372,7 +370,7 @@ var randPos  = [{
                 else if (datos.importe < 100000){
                     radio = Math.abs(datos.importe) / 100000;
                 }
-                
+
                 if (datos.nombre_estado == 'Rechazada')
                     var color = 'rgba(141,30,56,0.3)';
                 else if (datos.importe == null)
@@ -459,7 +457,7 @@ var randPos  = [{
 
         pulse.transition()
                 .duration(1500)
-                
+
                 .ease("bounce")
                 .each("start", function() {
                     d3.select(this)
@@ -523,15 +521,15 @@ var randPos  = [{
                 })
                 .interpolate("basis");
 
-        var testing = svg.append("svg:path")
+        var route = svg.append("svg:path")
                 .attr("d", pDraw(pathinfo))
                 .style("stroke-width", 2)
                 .style("fill", "none")
                 .style("stroke", "rgba(241,90,36,0.2)");
 
-        var totalLength = testing.node().getTotalLength();
+        var totalLength = route.node().getTotalLength();
 
-        testing
+        route
                 .attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", totalLength)
                 .transition()
@@ -551,43 +549,45 @@ var randPos  = [{
 
     function twoSecondFunction() {
 
-    var item = randPos[Math.floor(Math.random() * randPos.length)];
-    var item1 = randPos[Math.floor(Math.random() * randPos.length)];
+        var item = randPos[Math.floor(Math.random() * randPos.length)];
+        var item1 = randPos[Math.floor(Math.random() * randPos.length)];
 
-    var posicion = map.latLngToXY(item.x, item.y);
-    var receptor = map.latLngToXY(item1.x, item1.y);
+        var posicion = map.latLngToXY(item.x, item.y);
+        var receptor = map.latLngToXY(item1.x, item1.y);
 
-    var origin = {
-    x: receptor[0],
-    y: receptor[1]
-    };
-    var destination = {
-    x: posicion[0],
-    y: posicion[1]
-    };
+        var origin = {
+          x: receptor[0],
+          y: receptor[1]
+        };
 
-    var h, svg, w, targetPath, mapD, projection, path;
+        var destination = {
+          x: posicion[0],
+          y: posicion[1]
+        };
+
+        var height, width, mapD, svg, projection, path;
 
         mapD = d3.select(".datamap");
 
-        w = $('.datamap').width();
-        h = $('.datamap').height();
+        width = $('.datamap').width();
+        height = $('.datamap').height();
 
         projection = d3.geo
-                .mercator()
-                .scale(150)
-                .translate([w / 2, h / 2]);
+          .mercator()
+          .scale(150)
+          .translate([width / 2, height / 2]);
 
         path = d3.geo
-                .path()
-                .pointRadius(2)
-                .projection(projection);
+          .path()
+          .pointRadius(2)
+          .projection(projection);
 
         svg = mapD.append("svg:g")
-                .attr("width", w)
-                .attr("height", h)
-                .attr("class", "test");
+          .attr("width", width)
+          .attr("height", height)
+          .attr("class", "route");
 
+        // to make the line becomes a curve
         var xNew = ((origin.x + destination.x) / 2);
         var yNew = ((origin.y + destination.y) / 2);
 
@@ -597,124 +597,44 @@ var randPos  = [{
         }
 
         var pathinfo = [origin, mid_point, destination];
+
+        // create the line
         pDraw = d3.svg.line()
-                .x(function(d) {
-                    return d.x;
-                })
-                .y(function(d) {
-                    return d.y;
-                })
-                .interpolate("basis");
+          .x(function(d) {
+            return d.x;
+          })
+          .y(function(d) {
+            return d.y;
+          })
+          .interpolate("basis");
 
-        var testing = svg.append("svg:path")
-                .attr("d", pDraw(pathinfo))
-                .style("stroke-width", 2)
-                .style("fill", "none")
-                .style("stroke", "rgba(70, 214, 154, 0.2)");
+        // route line initial attributes
+        var route = svg.append("svg:path")
+          .attr("d", pDraw(pathinfo))
+          .style("stroke-width", 2)
+          .style("fill", "none")
+          .style("stroke", "rgba(70, 214, 154, 0.5)");
 
-        var totalLength = testing.node().getTotalLength();
+        var totalLength = route.node().getTotalLength();
+        var duration = totalLength + 1200;
 
-        testing
-                .attr("stroke-dasharray", totalLength + " " + totalLength)
-                .attr("stroke-dashoffset", totalLength)
-                .transition()
-                .duration(1500)
-                .ease("ease-out")
-                .attr("stroke-dashoffset", 0)
-                .transition()
-                    .style("stroke","rgba(70, 214, 154, 0)")
-                ;
+        route // set new attributes
+          .attr("stroke-dasharray", totalLength)
+          .attr("stroke-dashoffset", totalLength);
+
+        // animation
+        route.transition()
+          .ease("ease-out")
+          .duration(duration)
+          .attr("stroke-dashoffset", 0 - totalLength)
+          .style("opacity", 0.0);
 
         svg.transition()
-                .duration(2500)
-                .each("end", function() {
-                    d3.select(this)
-                    .remove();
-                });
-
-    }
-
-     function oneSecondFunction() {
-
-    var item1 = latitudes[Math.floor(Math.random() * latitudes.length)];
-    var item = latitudes[Math.floor(Math.random() * latitudes.length)];
-
-    var posicion = map.latLngToXY(item.x, item.y);
-    var receptor = map.latLngToXY(item1.x, item1.y);
-
-    var origin = {
-    x: receptor[0],
-    y: receptor[1]
-    };
-    var destination = {
-    x: posicion[0],
-    y: posicion[1]
-    };
-
-    var h, svg, w, targetPath, mapD, projection, path;
-
-        mapD = d3.select(".datamap");
-
-        w = $('.datamap').width();
-        h = $('.datamap').height();
-
-        projection = d3.geo
-                .mercator()
-                .scale(150)
-                .translate([w / 2, h / 2]);
-
-        path = d3.geo
-                .path()
-                .pointRadius(2)
-                .projection(projection);
-
-        svg = mapD.append("svg:g")
-                .attr("width", w)
-                .attr("height", h)
-                .attr("class", "test");
-
-        var xNew = ((origin.x + destination.x) / 2);
-        var yNew = ((origin.y + destination.y) / 2);
-
-        var mid_point = {
-            x: ( xNew - (xNew * 0.010) ),
-            y: ( yNew - (yNew * 0.020) )
-        }
-        var pathinfo = [origin, mid_point, destination];
-        pDraw = d3.svg.line()
-                .x(function(d) {
-                    return d.x;
-                })
-                .y(function(d) {
-                    return d.y;
-                })
-                .interpolate("basis");
-
-        var testing = svg.append("svg:path")
-                .attr("d", pDraw(pathinfo))
-                .style("stroke-width", 2)
-                .style("fill", "none")
-                .style("stroke", "rgba(70, 214, 154, 0.2)");
-
-        var totalLength = testing.node().getTotalLength();
-
-        testing
-                .attr("stroke-dasharray", totalLength + " " + totalLength)
-                .attr("stroke-dashoffset", totalLength)
-                .transition()
-                .duration(1200)
-                .ease("ease-out")
-                .attr("stroke-dashoffset", 0)
-                .transition()
-                    .style("stroke","rgba(70, 214, 154, 0)")
-                ;
-
-        svg.transition()
-                .duration(2000)
-                .each("end", function() {
-                    d3.select(this)
-                    .remove();
-                });
+          .duration(duration)
+          .each("end", function() {
+          d3.select(this)
+            .remove();
+          });
 
     }
     </script>
